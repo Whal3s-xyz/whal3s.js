@@ -1,4 +1,4 @@
-import { Bytes, providers } from 'ethers';
+import { Bytes, providers } from "ethers";
 import { Network } from "../types/types-internal";
 declare class Wallet {
     private static _instance;

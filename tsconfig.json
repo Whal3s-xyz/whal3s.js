@@ -17,5 +17,5 @@
       "allowSyntheticDefaultImports": true,
     },
     "include": ["src/lib"],
-    "exclude": ["src/lib/**/tests"],
+    // "exclude": ["src/lib/**/tests"],
 }
