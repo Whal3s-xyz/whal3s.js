@@ -19,6 +19,7 @@ class Whal3s {
 }
 
 export {
+  Whal3s,
   Wallet,
   NftValidationUtility,
   MATIC_MAINNET,

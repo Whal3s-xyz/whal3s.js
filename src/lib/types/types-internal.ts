@@ -5,7 +5,7 @@ export interface Network {
   rpcUrl: string;
 }
 
-export interface NFTUtility {
+export type NFTUtility = {
   id: string;
   type: string;
   created_at: string;
@@ -14,32 +14,31 @@ export interface NFTUtility {
   network: string;
   max_engagements: number;
   max_engagements_per_nft: string;
-}
+};
 
-export interface NFTUtilityRequest {
-  network: string;
-  contract_address: string;
-  max_engagements?: number;
-  max_engagements_per_nft?: number;
-}
-
-export interface Engagement {
+export type EngagementRequest = {
   token_id: string;
+  wallet_address: string;
+  signature: string;
   metadata?: any;
-  staus?: 'PENDING' | 'VALID' | 'INVALID';
-}
+};
 
 export type EngagementResponse = {
   id: string;
-  type: string;
   created_at: string;
   updated_at: string;
   wallet_address: string;
   token_id: string;
   contract_address: string;
   network: string;
-  metadata: any;
-  status: 'PENDING' | 'VALID' | 'INVALID';
+  metadata?: any;
+  status: string;
+};
+
+export type ValidNFT = {
+  nfts: any;
+  error: string[];
+  valid: boolean;
 };
 
 export type CallbackFunctionVariadic = (...args: any[]) => void;

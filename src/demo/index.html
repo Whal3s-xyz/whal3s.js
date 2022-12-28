@@ -1,11 +1,10 @@
 <!doctype html>
 <html class="h-full bg-gray-100">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> -->
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script type="module" src="/src/demo/index.ts"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -30,106 +29,109 @@
         }
     </script>
 </head>
+
 <body class="h-full">
 
-<div class="min-h-full" x-data="app">
-    <header class="bg-[#0b0b0b] pb-24">
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-            <div class="relative flex items-center justify-center py-5 lg:justify-between">
-                <!-- Logo -->
-                <div class="absolute left-0 flex-shrink-0 lg:static">
-                    <a href="#">
-                        <span class="sr-only">Whal3s</span>
-                        <img class="h-8 w-auto"
-                             src="https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/Whal3s_white.svg"
-                             alt="Whal3s">
-                    </a>
-                </div>
-
-
-            </div>
-            <div class=" border-t border-white border-opacity-20 py-5 ">
-                <div class="grid grid-cols-3 items-center gap-8">
-                    <div class="col-span-2">
-
+    <div class="min-h-full" x-data="app">
+        <header class="bg-[#0b0b0b] pb-24">
+            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+                <div class="relative flex items-center justify-center py-5 lg:justify-between">
+                    <!-- Logo -->
+                    <div class="absolute left-0 flex-shrink-0 lg:static">
+                        <a href="#">
+                            <span class="sr-only">Whal3s</span>
+                            <img class="h-8 w-auto"
+                                src="https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/Whal3s_white.svg"
+                                alt="Whal3s">
+                        </a>
                     </div>
-                    <div>
-                        <div class="mx-auto w-full max-w-md text-white">
-                            <p class="text-white">Address: <span x-text="walletAddress"></span></p>
-                            <pre x-html="foo"></pre>
+
+
+                </div>
+                <div class=" border-t border-white border-opacity-20 py-5 ">
+                    <div class="grid grid-cols-3 items-center gap-8">
+                        <div class="col-span-2">
+
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </header>
-    <main class="-mt-24 pb-8">
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-            <h1 class="sr-only">Whal3s features</h1>
-            <!-- Main 3 column grid -->
-            <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
-                <!-- Left column -->
-                <div class="grid grid-cols-1 gap-4 lg:col-span-2">
-                    <section aria-labelledby="section-1-title">
-                        <h2 class="sr-only" id="section-1-title">Section title</h2>
-                        <div class="overflow-hidden rounded-lg bg-white shadow">
-                            <div class="p-6 grid gap-5 grid-cols-2 lg:grid-cols-3">
-                                <button @click="() => {connectWallet('ETH_MAINNET')}" type="button"
-                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
-                                    Connect wallet
-                                </button>
-                                <button type="button"
-                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
-                                    Switch to Mainnet
-                                </button>
-                                <button type="button"
-                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
-                                    Switch to Görli
-                                </button>
-                                <button type="button"
-                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
-                                    Fetch Wallet NFTs
-                                </button>
-                                <button type="button"
-                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
-                                    Fetch NFT validation
-                                </button>
-                                <button type="button"
-                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
-                                    Reserve engagement
-                                </button>
-                                <button type="button"
-                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
-                                    Store engagement
-                                </button>
+                        <div>
+                            <div class="mx-auto w-full max-w-md text-white">
+                                <p class="text-white">Address: <span x-text="address"></span></p>
+                                <pre x-html="foo"></pre>
                             </div>
                         </div>
-                    </section>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Right column -->
-                <div class="grid grid-cols-1 gap-4">
-                    <section aria-labelledby="section-2-title">
-                        <h2 class="sr-only" id="section-2-title">Section title</h2>
-                        <div class="overflow-hidden rounded-lg bg-white shadow">
-                            <div class="p-6">
-                                Results...
+        </header>
+        <main class="-mt-24 pb-8">
+            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+                <h1 class="sr-only">Whal3s features</h1>
+                <!-- Main 3 column grid -->
+                <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
+                    <!-- Left column -->
+                    <div class="grid grid-cols-1 gap-4 lg:col-span-2">
+                        <section aria-labelledby="section-1-title">
+                            <h2 class="sr-only" id="section-1-title">Section title</h2>
+                            <div class="overflow-hidden rounded-lg bg-white shadow">
+                                <div class="p-6 grid gap-5 grid-cols-2 lg:grid-cols-3">
+                                    <button @click="() => {connectWallet('ETH_MAINNET')}" type="button"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
+                                        Connect wallet
+                                    </button>
+                                    <button @click="() => {connectWallet('ETH_MAINNET')}" type="button"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
+                                        Switch to Mainnet
+                                    </button>
+                                    <button @click="() => {connectWallet('ETH_GOERLI')}" type="button"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
+                                        Switch to Görli
+                                    </button>
+                                    <button @click="()=>{getWalletNfts()}" type="button"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
+                                        Fetch Wallet NFTs
+                                    </button>
+                                    <button @click="()=>{getNFTValidations()}" type="button"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
+                                        Fetch NFT validation
+                                    </button>
+                                    <button @click="()=>{reserveEngagement()}" type="button"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
+                                        Reserve engagement
+                                    </button>
+                                    <button @click="()=>{storeEngagement()}" type="button"
+                                        class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2">
+                                        Store engagement
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
+
+                    <!-- Right column -->
+                    <div class="grid grid-cols-1 gap-4">
+                        <section aria-labelledby="section-2-title">
+                            <h2 class="sr-only" id="section-2-title">Section title</h2>
+                            <div class="overflow-hidden rounded-lg bg-white shadow">
+                                <div class="p-6">
+                                    <span x-text="result"></span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
-    <footer>
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-            <div class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 sm:text-left"><span
-                    class="block sm:inline">&copy; 2022 Whal3s, Inc.</span> <span class="block sm:inline">All rights reserved.</span>
+        </main>
+        <footer>
+            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+                <div class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 sm:text-left"><span
+                        class="block sm:inline">&copy; 2022 Whal3s, Inc.</span> <span class="block sm:inline">All rights
+                        reserved.</span>
+                </div>
             </div>
-        </div>
-    </footer>
-</div>
+        </footer>
+    </div>
 
 </body>
+
 </html>

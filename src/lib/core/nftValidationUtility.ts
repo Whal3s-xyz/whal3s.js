@@ -1,18 +1,21 @@
 import { AxiosRequestConfig } from 'axios';
 import {
-  Engagement,
+  EngagementRequest,
   EngagementResponse,
   NFTUtility,
-  NFTUtilityRequest
+  ValidNFT
 } from '../types/types-internal';
 import { API_URL } from '../utils/env';
 import { HttpClient } from '../utils/http-client';
 class NftValidationUtility extends HttpClient {
+  public id: string;
   private apiKey: string;
   private static classInstance?: NftValidationUtility;
 
-  private constructor() {
-    super(`${API_URL}nft-validation-utilities`);
+  // TODO: Insert methods to communicate with API
+
+  constructor() {
+    super(`${API_URL}`);
     this._initializeRequestInterceptor();
   }
 
@@ -27,55 +30,45 @@ class NftValidationUtility extends HttpClient {
     return config;
   };
 
-  public static getInstance(apiKey: string) {
+  // returns the reusable encapsulated class instance
+  public static getInstance(id: string, apiKey: string) {
     if (!this.classInstance) {
       this.classInstance = new NftValidationUtility();
       this.classInstance.apiKey = apiKey;
+      this.classInstance.id = id;
     }
     return this.classInstance;
   }
 
-  public getValidationUtilities = () => this.instance.get<NFTUtility[]>('');
+  //get all the NFT Validation Utilities
+  public getValidationUtilities = () =>
+    this.instance.get<NFTUtility[]>('nft-validation-utilities');
 
-  public createNftValidationUtility = (requestBody: NFTUtilityRequest) =>
-    this.instance.post<NFTUtility>('', requestBody);
-
-  public updateNftUtility = (
-    requestBody: NFTUtilityRequest,
-    utilityID: string
-  ) => this.instance.put<NFTUtility>(`/${utilityID}`, requestBody);
-
-  public deleteNftUtility = (utilityID: string) =>
-    this.instance.delete<string>(`/${utilityID}`);
-
-  public getNftUtility = (utilityID: string) =>
-    this.instance.get<NFTUtility>(`/${utilityID}`);
-
-  public storeEngagement = (body: Engagement, utilityID: string) =>
-    this.instance.post<EngagementResponse>(`/${utilityID}/engagements`, body);
-
-  public getAllEngagements = (utilityID: string) =>
-    this.instance.get<EngagementResponse[]>(`/${utilityID}/engagements`);
-
-  public updateEngagement = (
-    requestBody: Engagement,
-    utilityID: string,
-    engagementID: string
-  ) =>
-    this.instance.put<EngagementResponse>(
-      `/${utilityID}/engagements/${engagementID}`,
-      requestBody
+  //get all NFTs for wallet
+  public getAllNftWallet = (wallet: string) =>
+    this.instance.get<ValidNFT>(
+      `nft-validation-utilities/${this.id}/wallet/${wallet}`
     );
 
-  public removeEngagement = (utilityID: string, engagementID: string) =>
-    this.instance.delete<string>(`/${utilityID}/engagements/${engagementID}`);
+  //get message to sign
+  public getMessage = (wallet: string) =>
+    this.instance.post<{ message: string }>(`signature-messages`, {
+      utility_id: this.id,
+      wallet_address: wallet
+    });
 
-  public getEngagement = (utilityID: string, engagementID: string) =>
-    this.instance.get<EngagementResponse>(
-      `/${utilityID}/engagements/${engagementID}`
+  //reserve NFT engagement
+  public reserveEngagement = (params: EngagementRequest) =>
+    this.instance.post<EngagementResponse>(
+      `user/nft-validation-utilities/${this.id}/engagement-reservations`,
+      params
     );
 
-  public getAllUtlitiyWallet = (utilityID: string, wallet: string) =>
-    this.instance<any>(`${utilityID}/wallet/${wallet}`);
+  //store NFT engagement
+  public storeEngagement = (params: EngagementRequest) =>
+    this.instance.post<EngagementResponse>(
+      `user/nft-validation-utilities/${this.id}/engagements`,
+      params
+    );
 }
 export default NftValidationUtility;

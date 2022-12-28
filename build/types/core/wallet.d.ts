@@ -1,6 +1,6 @@
-import { Bytes, providers } from "ethers";
-import { Network } from "../types/types-internal";
-declare class Wallet {
+import { Bytes, providers } from 'ethers';
+import { Network } from '../types/types-internal';
+export declare class Wallet {
     private static _instance;
     debug: boolean;
     address: string | undefined;
