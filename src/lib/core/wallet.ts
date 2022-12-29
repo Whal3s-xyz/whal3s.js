@@ -19,7 +19,7 @@ export class Wallet {
   private static _instance: any;
   debug = false;
   address: string | undefined;
-  private onboard: OnboardAPI | undefined;
+  public onboard: OnboardAPI | undefined;
   signer: providers.JsonRpcSigner | undefined;
   ethersProvider: providers.Web3Provider | undefined;
 
@@ -60,6 +60,7 @@ export class Wallet {
 
     try {
       const wallets = await this.onboard.connectWallet();
+      console.log('wallets...', wallets);
       await this.onboard.setChain({ chainId: network.id });
       if (wallets[0]) {
         // create an ethers provider with the last connected wallet provider

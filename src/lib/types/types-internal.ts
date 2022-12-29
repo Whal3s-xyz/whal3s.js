@@ -35,8 +35,43 @@ export type EngagementResponse = {
   status: string;
 };
 
+type NFTResponse = {
+  attributes: Attribute;
+  engagements: EngagementResponse[];
+  error: string[];
+  valid: boolean;
+};
+
+type Attribute = {
+  contract: any;
+  contractMetadata: {
+    name: string;
+    symbol: string;
+    totalSupply: string;
+    tokenType: string;
+  };
+  description: string;
+  id: {
+    tokenId: string;
+    tokenMetadata: {
+      tokenType: string;
+    };
+  };
+  media: {
+    raw: string;
+    gateway: string;
+  };
+  metadata: any;
+  timeLastUpdated: string;
+  title: string;
+  tokenUri: {
+    gateway: string;
+    raw: string;
+  };
+};
+
 export type ValidNFT = {
-  nfts: any;
+  nfts: { [key: number]: NFTResponse };
   error: string[];
   valid: boolean;
 };

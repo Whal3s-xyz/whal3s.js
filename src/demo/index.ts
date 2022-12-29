@@ -5,10 +5,9 @@ import { EngagementRequest } from '../lib/types/types-internal';
 // import { Wallet, NftValidationUtility, ETH_GOERLI } from '@whal3s/whal3s.js'; Use this with `npm pack` to test the actual library; it replicates the original NPM package.
 
 const wallet = new Wallet();
-const apiModule = NftValidationUtility.getInstance(
-  'your utility id', // utility id
-  'your api key' // API key
-);
+const API_KEY = 'q0YZdgPQpLXTtrbb5H5dCaT6bQo1rZ60BJdnHEjk';
+const id = 'd7477d55-64c8-4cbf-87cb-56fc13efcd1b';
+let apiModule: NftValidationUtility;
 
 console.log('myWallet', wallet);
 document.addEventListener('alpine:init', () => {
@@ -17,8 +16,10 @@ document.addEventListener('alpine:init', () => {
     initialized: false,
     wallet: undefined,
     address: '',
+    utility: {},
     apiModule: undefined,
-    result: undefined,
+    result: '',
+    nfts: [],
     foo: 'bar',
     toggle() {
       this.open = !this.open;
@@ -28,10 +29,16 @@ document.addEventListener('alpine:init', () => {
         this.initialized = true;
         this.wallet = wallet;
       });
+      NftValidationUtility.getInstance(id, API_KEY).then((res) => {
+        apiModule = res;
+        this.utility = apiModule.utility;
+      });
     },
-    connectWallet(networkString) {
-      wallet.connect(networkString).then((r) => {
+    connectWallet() {
+      apiModule.connectWallet().then((r) => {
         this.address = wallet.address;
+        this.nfts = apiModule.nfts;
+        console.log(this.nfts);
         console.log({ wallet: wallet.address });
       });
     },
@@ -99,6 +106,16 @@ document.addEventListener('alpine:init', () => {
         alert('NFT stored');
       } catch (error) {
         alert(error.message);
+        console.log(error);
+      }
+    },
+
+    async claimNFT(id: string) {
+      try {
+        alert(`Claiming NFT ID:${id}`);
+        const claim = await apiModule.claimNFT(true, id);
+        alert(claim ? 'success' : 'fail');
+      } catch (error) {
         console.log(error);
       }
     },
