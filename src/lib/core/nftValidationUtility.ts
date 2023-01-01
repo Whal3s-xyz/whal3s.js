@@ -48,6 +48,7 @@ class NftValidationUtility extends HttpClient {
     try {
       await this.wallet.connect(this.utility.network);
       console.log('logged in adddress:', this.wallet.address);
+      console.log(await this.wallet.onboard.state.get());
       this.nfts = await this.getAllNftWallet(this.wallet.address);
       console.log(this.nfts);
     } catch (error) {
@@ -59,10 +60,11 @@ class NftValidationUtility extends HttpClient {
     try {
       //step1: fetch the message to sign
       const msg = await this.getMessage(this.wallet.address);
+      console.log('msg:', msg);
 
       //step2: ask user to sign the message
       const signedMsgHash = await this.wallet.signMessage(msg.message);
-
+      console.log('signedMsg:', signedMsgHash);
       //params to reserve and store engagement
       const metadata = this.nfts.nfts[nftId].attributes.metadata;
       const params: EngagementRequest = {

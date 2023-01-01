@@ -1,14 +1,21 @@
+import Wallet from './wallet';
 import { EngagementRequest, EngagementResponse, NFTUtility, ValidNFT } from '../types/types-internal';
 import { HttpClient } from '../utils/http-client';
 declare class NftValidationUtility extends HttpClient {
-    id: any;
+    id: string;
     private apiKey;
     private static classInstance?;
+    utility: NFTUtility;
+    nfts: ValidNFT;
+    wallet: Wallet;
     constructor();
     private _initializeRequestInterceptor;
     private _handleRequest;
-    static getInstance(id: string, apiKey: string): NftValidationUtility;
+    static getInstance(id: string, apiKey: string): Promise<NftValidationUtility>;
+    connectWallet(): Promise<void>;
+    claimNFT(reserve: boolean, nftId: string): Promise<boolean>;
     getValidationUtilities: () => Promise<import("axios").AxiosResponse<NFTUtility[], any>>;
+    getValidationUtility: () => Promise<import("axios").AxiosResponse<NFTUtility, any>>;
     getAllNftWallet: (wallet: string) => Promise<import("axios").AxiosResponse<ValidNFT, any>>;
     getMessage: (wallet: string) => Promise<import("axios").AxiosResponse<{
         message: string;

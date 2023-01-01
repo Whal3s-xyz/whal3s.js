@@ -20,7 +20,7 @@ export class Wallet {
   debug = false;
   address: string | undefined;
   public onboard: OnboardAPI | undefined;
-  signer: providers.JsonRpcSigner | undefined;
+  signer: providers.JsonRpcSigner | undefined | ethers.Signer;
   ethersProvider: providers.Web3Provider | undefined;
 
   constructor() {

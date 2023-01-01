@@ -1,7 +1,6 @@
-import { ETH_GOERLI, Wallet, NftValidationUtility } from '../lib';
-import { ETH_MAINNET } from '../lib';
 import Alpine from 'alpinejs';
-import { EngagementRequest } from '../lib/types/types-internal';
+import { NftValidationUtility, Wallet } from '../lib';
+// import { EngagementRequest } from '../lib/types/types-internal';
 // import { Wallet, NftValidationUtility, ETH_GOERLI } from '@whal3s/whal3s.js'; Use this with `npm pack` to test the actual library; it replicates the original NPM package.
 
 const wallet = new Wallet();
