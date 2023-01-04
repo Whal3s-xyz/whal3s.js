@@ -1,59 +1,69 @@
 import Alpine from 'alpinejs';
-import { NftValidationUtility, Wallet } from '../lib';
-// import { EngagementRequest } from '../lib/types/types-internal';
+
+import Whal3s, { SUPPORTED_WALLETS, NETWORKS } from '../lib';
+import { EngagementRequest } from '../lib/types/types-internal';
+import NftValidationUtility from '../lib/core/nftValidationUtility';
 // import { Wallet, NftValidationUtility, ETH_GOERLI } from '@whal3s/whal3s.js'; Use this with `npm pack` to test the actual library; it replicates the original NPM package.
 
-const wallet = new Wallet();
 const API_KEY = 'q0YZdgPQpLXTtrbb5H5dCaT6bQo1rZ60BJdnHEjk';
-const id = 'd7477d55-64c8-4cbf-87cb-56fc13efcd1b';
-let apiModule: NftValidationUtility;
+const id = '0ce0e23d-3cbf-40be-bb44-43d12239fbe6';
 
-console.log('myWallet', wallet);
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     open: false,
     initialized: false,
     wallet: undefined,
+    whale3s: undefined,
     address: '',
-    utility: {},
-    apiModule: undefined,
+    validationUtility: undefined,
+    validationUtilityDetails: {},
     result: '',
     nfts: [],
     foo: 'bar',
     toggle() {
       this.open = !this.open;
     },
+
     init() {
-      wallet.init().then(() => {
-        this.initialized = true;
-        this.wallet = wallet;
+      this.whale3s = new Whal3s(API_KEY, {
+        wallets: [SUPPORTED_WALLETS.INJECTED, SUPPORTED_WALLETS.WALLET_CONNECT],
+        chains: [
+          NETWORKS.ETH_MAINNET,
+          NETWORKS.ETH_GOERLI,
+          NETWORKS.MATIC_MAINNET,
+          NETWORKS.MATIC_MUMBAI
+        ]
       });
-      NftValidationUtility.getInstance(id, API_KEY).then((res) => {
-        apiModule = res;
-        this.utility = apiModule.utility;
-      });
+
+      this.whale3s
+        .createValidationUtility(id)
+        .then((utility: NftValidationUtility) => {
+          this.validationUtility = utility;
+          this.validationUtilityDetails = utility.details;
+        });
+      this.initialized = true;
     },
     connectWallet() {
-      apiModule.connectWallet().then((r) => {
-        this.address = wallet.address;
-        this.nfts = apiModule.nfts;
+      this.validationUtility.connectWallet().then(() => {
+        this.address = this.whale3s.wallet.address;
+        this.nfts = this.validationUtility.nfts;
         console.log(this.nfts);
-        console.log({ wallet: wallet.address });
+        console.log({ wallet: this.whale3s.wallet.address });
       });
     },
     signMessage() {
-      wallet
+      this.whale3s.wallet
         .signMessage('hello world')
-        .then((signature) => console.log(signature));
+        .then((signature: string) => console.log(signature));
     },
-    swithNetwork(network: string) {
-      wallet.switchNetwork(network).then((r) => {
-        console.log(r);
+    switchNetwork(network: string) {
+      this.whale3s.wallet.switchNetwork(network).then((success: boolean) => {
+        console.log(success);
       });
     },
     async getNFTValidations() {
       try {
-        const res = await apiModule.getValidationUtilities();
+        const res = await this.validationUtility.getValidationUtilities();
         this.result = JSON.stringify(res); // just for the display purpose on the fontend
         console.log(res);
       } catch (error) {
@@ -64,7 +74,9 @@ document.addEventListener('alpine:init', () => {
     async getWalletNfts() {
       try {
         console.log('wallet addess:', this.wallet.address);
-        const nfts = await apiModule.getAllNftWallet(this.wallet.address);
+        const nfts = await this.validationUtility.getAllNftWallet(
+          this.wallet.address
+        );
         this.result = JSON.stringify(nfts); // just for the display purpose on the fontend
         console.log(nfts);
       } catch (error) {
@@ -75,14 +87,14 @@ document.addEventListener('alpine:init', () => {
     async reserveEngagement() {
       try {
         const msg = await this.getMessage();
-        const signedMsgHash = await wallet.signMessage(msg);
-        const wallet_address: string = wallet.address || '';
+        const signedMsgHash = await this.whale3s.wallet.signMessage(msg);
+        const wallet_address: string = this.whale3s.wallet.address || '';
         const body: EngagementRequest = {
           token_id: '1', //replace with your NFT id
           wallet_address,
           signature: signedMsgHash
         };
-        const res = await apiModule.reserveEngagement(body);
+        const res = await this.validationUtility.reserveEngagement(body);
         console.log(res);
         alert('NFT reserved');
       } catch (error) {
@@ -93,14 +105,14 @@ document.addEventListener('alpine:init', () => {
     async storeEngagement() {
       try {
         const msg = await this.getMessage();
-        const signedMsgHash = await wallet.signMessage(msg);
-        const wallet_address: string = wallet.address || '';
+        const signedMsgHash = await this.whale3s.wallet.signMessage(msg);
+        const wallet_address: string = this.whale3s.wallet.address || '';
         const body: EngagementRequest = {
           token_id: '1', //replace with your NFT id
           wallet_address,
           signature: signedMsgHash
         };
-        const res = await apiModule.storeEngagement(body);
+        const res = await this.validationUtility.storeEngagement(body);
         console.log(res);
         alert('NFT stored');
       } catch (error) {
@@ -112,7 +124,7 @@ document.addEventListener('alpine:init', () => {
     async claimNFT(id: string) {
       try {
         alert(`Claiming NFT ID:${id}`);
-        const claim = await apiModule.claimNFT(true, id);
+        const claim = await this.validationUtility.claimNFT(true, id);
         alert(claim ? 'success' : 'fail');
       } catch (error) {
         console.log(error);
@@ -120,7 +132,9 @@ document.addEventListener('alpine:init', () => {
     },
     async getMessage() {
       try {
-        const res = await apiModule.getMessage(this.wallet.address);
+        const res = await this.validationUtility.getMessage(
+          this.wallet.address
+        );
         const msg: string = res.message;
         return msg;
       } catch (error) {

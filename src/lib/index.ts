@@ -1,15 +1,24 @@
-import {
-  MATIC_MAINNET,
-  MATIC_MUMBAI,
-  ETH_MAINNET,
-  ETH_GOERLI
-} from './core/networks';
+import { InitOptions as WalletInitOptions } from '@web3-onboard/core';
+
+import { NETWORKS } from './core/networks';
 import NftValidationUtility from './core/nftValidationUtility';
-import Wallet from './core/wallet';
+import Wallet, { SUPPORTED_WALLETS } from './core/wallet';
 
 class Whal3s {
-  constructor() {
-    console.log('Library constructor loaded');
+  public wallet: Wallet;
+  private readonly apiKey: string;
+
+  constructor(apiKey: string, walletConfig: WalletInitOptions) {
+    this.wallet = new Wallet(walletConfig);
+    this.apiKey = apiKey;
+  }
+
+  async createValidationUtility(id: string) {
+    return NftValidationUtility.createValidationUtility(
+      this.wallet,
+      this.apiKey,
+      id
+    );
   }
 
   myMethod = (): boolean => {
@@ -18,12 +27,5 @@ class Whal3s {
   };
 }
 
-export {
-  Whal3s,
-  Wallet,
-  NftValidationUtility,
-  MATIC_MAINNET,
-  MATIC_MUMBAI,
-  ETH_MAINNET,
-  ETH_GOERLI
-};
+export default Whal3s;
+export { NETWORKS, SUPPORTED_WALLETS };

@@ -1,4 +1,8 @@
-import Onboard, { OnboardAPI } from '@web3-onboard/core';
+import Onboard, {
+  InitOptions,
+  OnboardAPI,
+  WalletState
+} from '@web3-onboard/core';
 import injectedModule from '@web3-onboard/injected-wallets';
 import walletConnectModule from '@web3-onboard/walletconnect';
 import { Bytes, ethers, providers } from 'ethers';
@@ -7,56 +11,64 @@ import {
   ETH_MAINNET,
   MATIC_MAINNET,
   MATIC_MUMBAI,
-  resolveNetwork
+  NETWORKS
 } from './networks';
 import { Network } from '../types/types-internal';
+import { asyncSome } from '../helpers';
 
 const walletConnect = walletConnectModule();
-
 const injected = injectedModule();
 
+type NetworkArguments = Network | keyof typeof NETWORKS;
+
+export const SUPPORTED_WALLETS = {
+  INJECTED: injected,
+  WALLET_CONNECT: walletConnect
+};
+
 export class Wallet {
-  private static _instance: any;
-  debug = false;
+  private static _instance: InstanceType<typeof Wallet>;
   address: string | undefined;
   public onboard: OnboardAPI | undefined;
   signer: providers.JsonRpcSigner | undefined | ethers.Signer;
   ethersProvider: providers.Web3Provider | undefined;
 
-  constructor() {
+  // todo: create minimal required config for walletConfig
+  constructor(walletConfig: InitOptions) {
     if (Wallet._instance) {
       return Wallet._instance;
     }
+
     Wallet._instance = this;
+
+    // assumes default that can and should be overridden
+    this.onboard = Onboard({
+        wallets: [injected, walletConnect],
+        chains: [ETH_MAINNET, ETH_GOERLI, MATIC_MAINNET, MATIC_MUMBAI],
+        appMetadata: {
+          name: 'Utility app',
+          icon: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
+          logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
+          description: 'Whal3s powered application',
+          recommendedInjectedWallets: [
+            { name: 'MetaMask', url: 'https://metamask.io' }
+          ]
+        },
+        accountCenter: {
+          desktop: {
+            enabled: false
+          },
+          mobile: {
+            enabled: false
+          }
+        },
+        ...walletConfig
+      }
+    );
   }
 
-  init = async () => {
-    //Planned feature: Onboard config should fit Utility and it's creator (Chains, Logo, color,...)
-    this.onboard = Onboard({
-      wallets: [injected, walletConnect],
-      chains: [ETH_MAINNET, ETH_GOERLI, MATIC_MAINNET, MATIC_MUMBAI],
-      appMetadata: {
-        name: 'Utility app',
-        icon: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
-        logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
-        description: 'Whal3s powered application',
-        recommendedInjectedWallets: [
-          { name: 'MetaMask', url: 'https://metamask.io' }
-        ]
-      },
-      accountCenter: {
-        desktop: {
-          enabled: false
-        },
-        mobile: {
-          enabled: false
-        }
-      }
-    });
-  };
-
-  connect = async (network: Network | string): Promise<boolean> => {
-    if (typeof network === 'string') network = resolveNetwork(network);
+  connect = async (network: NetworkArguments): Promise<boolean> => {
+    if (typeof network === 'string') network = NETWORKS[network];
 
     try {
       const wallets = await this.onboard.connectWallet();
@@ -74,18 +86,30 @@ export class Wallet {
       } else {
         console.log('noWalletSelected');
         throw 'No wallet selected';
-        // this.dispatch('noWalletSelected')
       }
     } catch (e) {
       return false;
     }
   };
-  switchNetwork = async (network: Network | string): Promise<boolean> => {
-    if (typeof network === 'string') network = resolveNetwork(network);
+
+  public switchNetwork = async (
+    network: NetworkArguments
+  ): Promise<boolean> => {
+    if (typeof network === 'string') network = NETWORKS[network];
     return this.onboard.setChain({ chainId: network.id });
   };
-  signMessage = async (message: Bytes | string): Promise<string> => {
+
+  public signMessage = async (message: Bytes | string): Promise<string> => {
     return this.signer.signMessage(message);
+  };
+
+  public onSameNetwork = async (network: keyof typeof NETWORKS) => {
+    const wallets = this.onboard.state.get().wallets;
+
+    return asyncSome<WalletState>(wallets, async (wallet) => {
+      const chainId = await wallet.provider.request({ method: 'eth_chainId' });
+      return chainId === NETWORKS[network].id;
+    });
   };
 }
 export default Wallet;

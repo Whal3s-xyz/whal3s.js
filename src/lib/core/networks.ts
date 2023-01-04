@@ -32,17 +32,9 @@ export const MATIC_MUMBAI: Network = {
   rpcUrl: MATIC_MUMBAI_RPC
 };
 
-export const resolveNetwork = (network: string): Network => {
-  switch (network) {
-    case 'ETH_MAINNET':
-      return ETH_MAINNET;
-    case 'ETH_GOERLI':
-      return ETH_GOERLI;
-    case 'MATIC_MAINNET':
-      return MATIC_MAINNET;
-    case 'MATIC_MUMBAI':
-      return MATIC_MUMBAI;
-    default:
-      return undefined;
-  }
+export const NETWORKS = {
+  MATIC_MAINNET,
+  MATIC_MUMBAI,
+  ETH_MAINNET,
+  ETH_GOERLI
 };

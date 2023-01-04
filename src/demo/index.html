@@ -83,14 +83,14 @@
                       Connect wallet
                     </button>
                     <button
-                      @click="() => {connectWallet('ETH_MAINNET')}"
+                      @click="() => {switchNetwork('ETH_MAINNET')}"
                       type="button"
                       class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2"
                     >
                       Switch to Mainnet
                     </button>
                     <button
-                      @click="() => {connectWallet('ETH_GOERLI')}"
+                      @click="() => {switchNetwork('ETH_GOERLI')}"
                       type="button"
                       class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2"
                     >
@@ -131,10 +131,10 @@
                   <div class="overflow-hidden rounded-lg bg-white shadow">
                     <div>
                       <p>Initialized utlity:</p>
-                      <span>Utility ID:</span><span x-text="utility.id"></span>
+                      <span>Utility ID:</span><span x-text="validationUtilityDetails.id"></span>
                       <br />
                       <span>Network:</span
-                      ><span x-text="utility.network"></span>
+                      ><span x-text="validationUtilityDetails.network"></span>
                     </div>
                   </div>
                 </div>
