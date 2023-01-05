@@ -86,6 +86,7 @@ class NftValidationUtility extends HttpClient {
         return true;
       } else {
         await this.wallet.switchNetwork(NETWORKS.ETH_GOERLI);
+        // todo: finish the flow by restarting claimNFT if switch succeeds
       }
     } catch (error) {
       this.catchError(error);
