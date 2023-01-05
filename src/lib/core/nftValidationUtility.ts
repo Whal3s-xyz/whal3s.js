@@ -8,7 +8,6 @@ import {
 } from '../types/types-internal';
 import { API_URL } from '../utils/env';
 import { HttpClient } from '../utils/http-client';
-import { NETWORKS } from './networks';
 import ExceptionHandler from './exceptionHandler';
 
 class NftValidationUtility extends HttpClient {
@@ -48,46 +47,51 @@ class NftValidationUtility extends HttpClient {
   public async connectWallet() {
     await this.wallet.connect(this.details.network);
     console.log('logged in adddress:', this.wallet.address);
-    this.nfts = await this.getAllNftWallet();
-    console.log(this.nfts);
+
+    const isOnTheSameNetwork = await this.wallet.onSameNetwork(
+      this.details.network
+    );
+
+    if (isOnTheSameNetwork) {
+      this.nfts = await this.getAllNftWallet();
+      console.log(this.nfts);
+    } else {
+      try {
+        await this.wallet.switchNetwork(this.details.network);
+      } catch (e) {
+        // todo: correctly handle this case
+        this.catchError(e);
+      }
+    }
   }
 
   public async claimNFT(reserve: boolean, nftId: string): Promise<boolean> {
     try {
-      const isOnTheSameNetwork = await this.wallet.onSameNetwork(
-        this.details.network
-      );
+      //step1: fetch the message to sign
+      const msg = await this.getMessage();
+      console.log('msg:', msg);
 
-      if (isOnTheSameNetwork) {
-        //step1: fetch the message to sign
-        const msg = await this.getMessage();
-        console.log('msg:', msg);
+      //step2: ask user to sign the message
+      const signedMsgHash = await this.wallet.signMessage(msg);
+      console.log('signedMsg:', signedMsgHash);
+      //params to reserve and store engagement
+      const metadata = this.nfts.nfts[nftId].attributes.metadata;
+      const params: EngagementRequest = {
+        token_id: nftId,
+        wallet_address: this.wallet.address,
+        signature: signedMsgHash,
+        metadata: JSON.stringify(metadata)
+      };
 
-        //step2: ask user to sign the message
-        const signedMsgHash = await this.wallet.signMessage(msg);
-        console.log('signedMsg:', signedMsgHash);
-        //params to reserve and store engagement
-        const metadata = this.nfts.nfts[nftId].attributes.metadata;
-        const params: EngagementRequest = {
-          token_id: nftId,
-          wallet_address: this.wallet.address,
-          signature: signedMsgHash,
-          metadata: JSON.stringify(metadata)
-        };
-
-        //step3: check if user wants to reserve the NFT
-        if (reserve) {
-          await this.reserveEngagement(params);
-          console.log('reseved');
-        }
-
-        await this.storeEngagement(params);
-        console.log('stored');
-        return true;
-      } else {
-        await this.wallet.switchNetwork(NETWORKS.ETH_GOERLI);
-        // todo: finish the flow by restarting claimNFT if switch succeeds
+      //step3: check if user wants to reserve the NFT
+      if (reserve) {
+        await this.reserveEngagement(params);
+        console.log('reseved');
       }
+
+      await this.storeEngagement(params);
+      console.log('stored');
+      return true;
     } catch (error) {
       this.catchError(error);
     }
