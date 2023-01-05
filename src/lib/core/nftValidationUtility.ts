@@ -8,6 +8,8 @@ import {
 } from '../types/types-internal';
 import { API_URL } from '../utils/env';
 import { HttpClient } from '../utils/http-client';
+import { NETWORKS } from './networks';
+import ExceptionHandler from './exceptionHandler';
 
 class NftValidationUtility extends HttpClient {
   private id: string;
@@ -21,10 +23,7 @@ class NftValidationUtility extends HttpClient {
     this._initializeRequestInterceptor();
   }
   private _initializeRequestInterceptor = () => {
-    this.instance.interceptors.request.use(
-      this._handleRequest,
-      this._handleError
-    );
+    this.instance.interceptors.request.use(this._handleRequest);
   };
   private _handleRequest = (config: AxiosRequestConfig) => {
     config.headers['Authorization'] = `Bearer ${this.apiKey}`;
@@ -47,14 +46,10 @@ class NftValidationUtility extends HttpClient {
   }
 
   public async connectWallet() {
-    try {
-      await this.wallet.connect(this.details.network);
-      console.log('logged in adddress:', this.wallet.address);
-      this.nfts = await this.getAllNftWallet(this.wallet.address);
-      console.log(this.nfts);
-    } catch (error) {
-      console.log(error);
-    }
+    await this.wallet.connect(this.details.network);
+    console.log('logged in adddress:', this.wallet.address);
+    this.nfts = await this.getAllNftWallet();
+    console.log(this.nfts);
   }
 
   public async claimNFT(reserve: boolean, nftId: string): Promise<boolean> {
@@ -65,11 +60,11 @@ class NftValidationUtility extends HttpClient {
 
       if (isOnTheSameNetwork) {
         //step1: fetch the message to sign
-        const msg = await this.getMessage(this.wallet.address);
+        const msg = await this.getMessage();
         console.log('msg:', msg);
 
         //step2: ask user to sign the message
-        const signedMsgHash = await this.wallet.signMessage(msg.message);
+        const signedMsgHash = await this.wallet.signMessage(msg);
         console.log('signedMsg:', signedMsgHash);
         //params to reserve and store engagement
         const metadata = this.nfts.nfts[nftId].attributes.metadata;
@@ -90,11 +85,10 @@ class NftValidationUtility extends HttpClient {
         console.log('stored');
         return true;
       } else {
-        await this.wallet.switchNetwork(this.details.network);
+        await this.wallet.switchNetwork(NETWORKS.ETH_GOERLI);
       }
     } catch (error) {
-      console.log('error:', error);
-      return false;
+      this.catchError(error);
     }
   }
 
@@ -108,17 +102,34 @@ class NftValidationUtility extends HttpClient {
     this.instance.get<NFTUtility>(`nft-validation-utilities/${this.id}`);
 
   //get all NFTs for wallet
-  public getAllNftWallet = (wallet: string) =>
+  public getAllNftWallet = () =>
     this.instance.get<ValidNFT>(
-      `nft-validation-utilities/${this.id}/wallet/${wallet}`
+      `nft-validation-utilities/${this.id}/wallet/${this.wallet.address}`
     );
 
   //get message to sign
-  public getMessage = (wallet: string) =>
-    this.instance.post<{ message: string }>(`signature-messages`, {
-      utility_id: this.id,
-      wallet_address: wallet
-    });
+  public getMessage = async () => {
+    if (!this.wallet.address) {
+      this.handleError(
+        new Error(
+          'You need to be connected to wallet to be able to getMessage'
+        ),
+        ExceptionHandler.Type.INTERACTION
+      );
+    }
+    try {
+      const res = await this.instance.post<{ message: string }>(
+        `signature-messages`,
+        {
+          utility_id: this.id,
+          wallet_address: this.wallet.address
+        }
+      );
+      return res.message;
+    } catch (e) {
+      this.catchError(e);
+    }
+  };
 
   //reserve NFT engagement
   public reserveEngagement = (params: EngagementRequest) =>

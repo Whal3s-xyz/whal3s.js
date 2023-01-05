@@ -44,12 +44,15 @@ document.addEventListener('alpine:init', () => {
       this.initialized = true;
     },
     connectWallet() {
-      this.validationUtility.connectWallet().then(() => {
-        this.address = this.whale3s.wallet.address;
-        this.nfts = this.validationUtility.nfts;
-        console.log(this.nfts);
-        console.log({ wallet: this.whale3s.wallet.address });
-      });
+      this.validationUtility
+        .connectWallet()
+        .then(() => {
+          this.address = this.whale3s.wallet.address;
+          this.nfts = this.validationUtility.nfts;
+          console.log(this.nfts);
+          console.log({ wallet: this.whale3s.wallet.address });
+        })
+        .catch((error) => console.log('Could not connect to wallet', error));
     },
     signMessage() {
       this.whale3s.wallet
@@ -62,6 +65,7 @@ document.addEventListener('alpine:init', () => {
       });
     },
     async getNFTValidations() {
+      // todo: parts logic can be moved into utility
       try {
         const res = await this.validationUtility.getValidationUtilities();
         this.result = JSON.stringify(res); // just for the display purpose on the fontend
@@ -72,6 +76,7 @@ document.addEventListener('alpine:init', () => {
       }
     },
     async getWalletNfts() {
+      // todo: logic can be moved into utility
       try {
         console.log('wallet addess:', this.wallet.address);
         const nfts = await this.validationUtility.getAllNftWallet(
@@ -85,8 +90,9 @@ document.addEventListener('alpine:init', () => {
       }
     },
     async reserveEngagement() {
+      // todo: logic can be moved into utility
       try {
-        const msg = await this.getMessage();
+        const msg = await this.validationUtility.getMessage();
         const signedMsgHash = await this.whale3s.wallet.signMessage(msg);
         const wallet_address: string = this.whale3s.wallet.address || '';
         const body: EngagementRequest = {
@@ -103,8 +109,9 @@ document.addEventListener('alpine:init', () => {
       }
     },
     async storeEngagement() {
+      // todo: logic can be moved into utility
       try {
-        const msg = await this.getMessage();
+        const msg = await this.validationUtility.getMessage();
         const signedMsgHash = await this.whale3s.wallet.signMessage(msg);
         const wallet_address: string = this.whale3s.wallet.address || '';
         const body: EngagementRequest = {
@@ -116,7 +123,6 @@ document.addEventListener('alpine:init', () => {
         console.log(res);
         alert('NFT stored');
       } catch (error) {
-        alert(error.message);
         console.log(error);
       }
     },
@@ -126,17 +132,6 @@ document.addEventListener('alpine:init', () => {
         alert(`Claiming NFT ID:${id}`);
         const claim = await this.validationUtility.claimNFT(true, id);
         alert(claim ? 'success' : 'fail');
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async getMessage() {
-      try {
-        const res = await this.validationUtility.getMessage(
-          this.wallet.address
-        );
-        const msg: string = res.message;
-        return msg;
       } catch (error) {
         console.log(error);
       }

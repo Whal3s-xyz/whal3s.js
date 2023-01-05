@@ -1,14 +1,17 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
+import ExceptionHandler from '../core/exceptionHandler';
+
 declare module 'axios' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface AxiosResponse<T = any> extends Promise<T> {}
 }
 
-export abstract class HttpClient {
+export abstract class HttpClient extends ExceptionHandler {
   protected readonly instance: AxiosInstance;
 
   public constructor(baseURL: string) {
+    super();
     this.instance = axios.create({
       baseURL
     });
@@ -17,13 +20,8 @@ export abstract class HttpClient {
   }
 
   private _initializeResponseInterceptor = () => {
-    this.instance.interceptors.response.use(
-      this._handleResponse,
-      this._handleError
-    );
+    this.instance.interceptors.response.use(this._handleResponse);
   };
 
   private _handleResponse = ({ data }: AxiosResponse) => data;
-
-  protected _handleError = (error: any) => Promise.reject(error.response.data);
 }

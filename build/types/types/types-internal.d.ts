@@ -1,5 +1,4 @@
 import { NETWORKS } from '../core/networks';
-
 export interface Network {
     id: string;
     token: string;

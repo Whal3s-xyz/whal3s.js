@@ -15,6 +15,7 @@ import {
 } from './networks';
 import { Network } from '../types/types-internal';
 import { asyncSome } from '../helpers';
+import ExceptionHandler from './exceptionHandler';
 
 const walletConnect = walletConnectModule();
 const injected = injectedModule();
@@ -26,15 +27,16 @@ export const SUPPORTED_WALLETS = {
   WALLET_CONNECT: walletConnect
 };
 
-export class Wallet {
+export class Wallet extends ExceptionHandler {
   private static _instance: InstanceType<typeof Wallet>;
   address: string | undefined;
   public onboard: OnboardAPI | undefined;
   signer: providers.JsonRpcSigner | undefined | ethers.Signer;
   ethersProvider: providers.Web3Provider | undefined;
 
-  // todo: create minimal required config for walletConfig
   constructor(walletConfig: InitOptions) {
+    super();
+
     if (Wallet._instance) {
       return Wallet._instance;
     }
@@ -43,32 +45,36 @@ export class Wallet {
 
     // assumes default that can and should be overridden
     this.onboard = Onboard({
-        wallets: [injected, walletConnect],
-        chains: [ETH_MAINNET, ETH_GOERLI, MATIC_MAINNET, MATIC_MUMBAI],
-        appMetadata: {
-          name: 'Utility app',
-          icon: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
-          logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
-          description: 'Whal3s powered application',
-          recommendedInjectedWallets: [
-            { name: 'MetaMask', url: 'https://metamask.io' }
-          ]
+      wallets: [injected, walletConnect],
+      chains: [ETH_MAINNET, ETH_GOERLI, MATIC_MAINNET, MATIC_MUMBAI],
+      appMetadata: {
+        name: 'Utility app',
+        icon: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
+        logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
+        description: 'Whal3s powered application',
+        recommendedInjectedWallets: [
+          { name: 'MetaMask', url: 'https://metamask.io' }
+        ]
+      },
+      accountCenter: {
+        desktop: {
+          enabled: false
         },
-        accountCenter: {
-          desktop: {
-            enabled: false
-          },
-          mobile: {
-            enabled: false
-          }
-        },
-        ...walletConfig
-      }
-    );
+        mobile: {
+          enabled: false
+        }
+      },
+
+      ...walletConfig
+    });
+  }
+
+  private getNetwork(network: NetworkArguments): Network {
+    return typeof network === 'string' ? NETWORKS[network] : network;
   }
 
   connect = async (network: NetworkArguments): Promise<boolean> => {
-    if (typeof network === 'string') network = NETWORKS[network];
+    network = this.getNetwork(network);
 
     try {
       const wallets = await this.onboard.connectWallet();
@@ -85,22 +91,42 @@ export class Wallet {
         return true;
       } else {
         console.log('noWalletSelected');
-        throw 'No wallet selected';
+        this.handleError(
+          new Error('No wallet selected'),
+          ExceptionHandler.Type.INTERACTION
+        );
       }
-    } catch (e) {
-      return false;
+    } catch (error) {
+      this.catchError(error);
     }
   };
 
   public switchNetwork = async (
     network: NetworkArguments
   ): Promise<boolean> => {
-    if (typeof network === 'string') network = NETWORKS[network];
-    return this.onboard.setChain({ chainId: network.id });
+    network = this.getNetwork(network);
+
+    try {
+      const success = await this.onboard.setChain({ chainId: network.id });
+      if (success) {
+        return true;
+      } else {
+        this.handleError(
+          new Error('User rejected request'),
+          ExceptionHandler.Type.INTERACTION
+        );
+      }
+    } catch (e) {
+      this.catchError(e);
+    }
   };
 
   public signMessage = async (message: Bytes | string): Promise<string> => {
-    return this.signer.signMessage(message);
+    try {
+      return await this.signer.signMessage(message);
+    } catch (e) {
+      this.catchError(e);
+    }
   };
 
   public onSameNetwork = async (network: keyof typeof NETWORKS) => {
