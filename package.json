@@ -36,12 +36,14 @@
     "@web3-onboard/gas": "^2.1.4",
     "@web3-onboard/injected-wallets": "^2.3.0",
     "@web3-onboard/walletconnect": "^2.1.3",
-    "@whal3s/whal3s.js": "file:whal3s-whal3s.js-0.0.1.tgz",
     "axios": "^1.2.1",
     "dotenv": "^16.0.3",
     "dotenv-webpack": "^8.0.1",
     "eip-712": "^1.0.0",
     "ethers": "^5.7.2"
+  },
+  "optionalDependencies": {
+    "@whal3s/whal3s.js": "file:whal3s-whal3s.js-0.0.1.tgz"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",
