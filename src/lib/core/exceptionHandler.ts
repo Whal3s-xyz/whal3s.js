@@ -52,7 +52,7 @@ class ExceptionHandler {
   }
 
   // If one does not know what type of error can happen
-  protected catchError(exception: unknown) {
+  public catchError(exception: unknown) {
     if (exception instanceof Whal3sException) {
       throw exception;
     }

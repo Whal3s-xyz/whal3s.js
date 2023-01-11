@@ -27,9 +27,11 @@ export const SUPPORTED_WALLETS = {
   WALLET_CONNECT: walletConnect
 };
 
-export class Wallet extends ExceptionHandler {
+export class Wallet extends EventTarget {
   private static _instance: InstanceType<typeof Wallet>;
-  address: string | undefined;
+
+  private readonly exceptionHandler: ExceptionHandler
+  private _address: string | undefined;
   public onboard: OnboardAPI | undefined;
   signer: providers.JsonRpcSigner | undefined | ethers.Signer;
   ethersProvider: providers.Web3Provider | undefined;
@@ -41,6 +43,7 @@ export class Wallet extends ExceptionHandler {
       return Wallet._instance;
     }
 
+    this.exceptionHandler = new ExceptionHandler()
     Wallet._instance = this;
 
     // assumes default that can and should be overridden
@@ -69,6 +72,21 @@ export class Wallet extends ExceptionHandler {
     });
   }
 
+
+  get address(): string | undefined {
+    return this._address;
+  }
+
+  set address(value: string | undefined) {
+
+    const oldValue = this._address
+    this._address = value;
+
+    if (oldValue !== value){
+      this.dispatchEvent(new CustomEvent('addressChanged', {detail: {address: value}}))
+    }
+  }
+
   private getNetwork(network: NetworkArguments): Network {
     return typeof network === 'string' ? NETWORKS[network] : network;
   }
@@ -78,7 +96,6 @@ export class Wallet extends ExceptionHandler {
 
     try {
       const wallets = await this.onboard.connectWallet();
-      console.log('wallets...', wallets);
       await this.onboard.setChain({ chainId: network.id });
       if (wallets[0]) {
         // create an ethers provider with the last connected wallet provider
@@ -91,13 +108,13 @@ export class Wallet extends ExceptionHandler {
         return true;
       } else {
         console.log('noWalletSelected');
-        this.handleError(
+        this.exceptionHandler.handleError(
           new Error('No wallet selected'),
           ExceptionHandler.Type.INTERACTION
         );
       }
     } catch (error) {
-      this.catchError(error);
+      this.exceptionHandler.catchError(error);
     }
   };
 
@@ -111,13 +128,13 @@ export class Wallet extends ExceptionHandler {
       if (success) {
         return true;
       } else {
-        this.handleError(
+        this.exceptionHandler.handleError(
           new Error('User rejected request'),
           ExceptionHandler.Type.INTERACTION
         );
       }
     } catch (e) {
-      this.catchError(e);
+      this.exceptionHandler.catchError(e);
     }
   };
 
@@ -125,7 +142,7 @@ export class Wallet extends ExceptionHandler {
     try {
       return await this.signer.signMessage(message);
     } catch (e) {
-      this.catchError(e);
+      this.exceptionHandler.catchError(e);
     }
   };
 

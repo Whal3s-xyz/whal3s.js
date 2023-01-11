@@ -5,7 +5,7 @@ export interface Network {
     label: string;
     rpcUrl: string;
 }
-export declare type NFTUtility = {
+export type NFTUtility = {
     id: string;
     type: string;
     created_at: string;
@@ -15,13 +15,13 @@ export declare type NFTUtility = {
     max_engagements: number;
     max_engagements_per_nft: string;
 };
-export declare type EngagementRequest = {
+export type EngagementRequest = {
     token_id: string;
     wallet_address: string;
     signature: string;
     metadata?: any;
 };
-export declare type EngagementResponse = {
+export type EngagementResponse = {
     id: string;
     created_at: string;
     updated_at: string;
@@ -32,13 +32,13 @@ export declare type EngagementResponse = {
     metadata?: any;
     status: string;
 };
-declare type NFTResponse = {
+type NFTResponse = {
     attributes: Attribute;
     engagements: EngagementResponse[];
     error: string[];
     valid: boolean;
 };
-declare type Attribute = {
+type Attribute = {
     contract: any;
     contractMetadata: {
         name: string;
@@ -65,13 +65,14 @@ declare type Attribute = {
         raw: string;
     };
 };
-export declare type ValidNFT = {
+export type WalletNftValidationResponse = {
     nfts: {
         [key: number]: NFTResponse;
     };
     error: string[];
     valid: boolean;
 };
-export declare type CallbackFunctionVariadic = (...args: any[]) => void;
-export declare type Class = new (...args: any[]) => any;
+export type CallbackFunctionVariadic = (...args: any[]) => void;
+export type Class = new (...args: any[]) => any;
+export type AbstractClass = abstract new (...args: any[]) => any;
 export {};

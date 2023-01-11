@@ -72,7 +72,7 @@ type Attribute = {
   };
 };
 
-export type ValidNFT = {
+export type WalletNftValidationResponse = {
   nfts: { [key: number]: NFTResponse };
   error: string[];
   valid: boolean;
@@ -80,3 +80,18 @@ export type ValidNFT = {
 
 export type CallbackFunctionVariadic = (...args: any[]) => void;
 export type Class = new (...args: any[]) => any;
+export type AbstractClass =  abstract new (...args: any[]) => any;
+
+
+// export type JSONValue =
+//     | string
+//     | number
+//     | boolean
+//     | JSONObject
+//     | JSONArray;
+//
+// export interface JSONObject {
+//   [x: string]: JSONValue;
+// }
+//
+// export type JSONArray = Array<JSONValue>

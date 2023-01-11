@@ -6,26 +6,27 @@ import Wallet, { SUPPORTED_WALLETS } from './core/wallet';
 
 class Whal3s {
   public wallet: Wallet;
-  private readonly apiKey: string;
 
-  constructor(apiKey: string, walletConfig: WalletInitOptions) {
+  constructor(walletConfig: WalletInitOptions = {
+    wallets: [SUPPORTED_WALLETS.INJECTED, SUPPORTED_WALLETS.WALLET_CONNECT],
+    chains: [
+      NETWORKS.ETH_MAINNET,
+      NETWORKS.ETH_GOERLI,
+      NETWORKS.MATIC_MAINNET,
+      NETWORKS.MATIC_MUMBAI
+    ]
+  }) {
     this.wallet = new Wallet(walletConfig);
-    this.apiKey = apiKey;
   }
 
   async createValidationUtility(id: string) {
     return NftValidationUtility.createValidationUtility(
       this.wallet,
-      this.apiKey,
       id
     );
   }
 
-  myMethod = (): boolean => {
-    console.log('Library method fired');
-    return true;
-  };
 }
 
 export default Whal3s;
-export { NETWORKS, SUPPORTED_WALLETS };
+export { NETWORKS, SUPPORTED_WALLETS, NftValidationUtility};
