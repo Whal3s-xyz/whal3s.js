@@ -4,7 +4,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const getPackageJson = require('./scripts/getPackageJson');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
 const { version, name, license, repository, author } = getPackageJson(
   'version',
   'name',
@@ -72,8 +71,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer']
-    }),
-    new Dotenv()
+    })
   ],
   resolve: {
     extensions: ['.ts', '.js', '.json'],

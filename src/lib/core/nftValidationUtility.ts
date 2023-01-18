@@ -119,13 +119,11 @@ class NftValidationUtility extends AbstractUtility {
     ) {
         // assumes user can create multiple validation utilities in one app
         const validationUtilityInstance = new NftValidationUtility();
-        wallet.addEventListener('addressChanged', () => validationUtilityInstance.fetchNfts())
-        validationUtilityInstance.wallet = wallet;
         validationUtilityInstance.id = id;
-        validationUtilityInstance.details =
-            await validationUtilityInstance.sendGetValidationUtilityRequest();
+        validationUtilityInstance.wallet = wallet;
 
-
+        validationUtilityInstance.details = await validationUtilityInstance.sendGetValidationUtilityRequest();
+        validationUtilityInstance.wallet.addEventListener('addressChanged', () => validationUtilityInstance.fetchNfts(), {signal: validationUtilityInstance.abortController.signal})
         return validationUtilityInstance;
     }
 
@@ -274,6 +272,10 @@ class NftValidationUtility extends AbstractUtility {
             `user/nft-validation-utilities/${this.id}/engagements`,
             params
         );
+
+    public destroy() {
+        this.abortController.abort()
+    }
 }
 
 export default NftValidationUtility;

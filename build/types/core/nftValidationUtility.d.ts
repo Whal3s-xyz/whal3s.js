@@ -43,5 +43,6 @@ declare class NftValidationUtility extends AbstractUtility {
     private sendGetMessageRequest;
     private sendReserveEngagementRequest;
     sendStoreEngagementRequest: (params: EngagementRequest) => Promise<import("axios").AxiosResponse<EngagementResponse, any>>;
+    destroy(): void;
 }
 export default NftValidationUtility;

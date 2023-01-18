@@ -29,7 +29,7 @@ Developer platform to easily create, deliver & manage any kind of token utility.
 This library is used to quickly and efficiently integrate the Whal3s developer platform into your existing tech stack. It is written in TypeScript, but thanks to UMD build it also offers support for vanilla JS or frameworks like React or Angular.
 
 ## Documentation
-See the [`whal3s.js` API docs](https://whal3s.readme.io) for Guides, Examples and API endpoint definitions.
+See the [`whal3s.js` API docs](https://whal3sjs.readme.io/) for Guides, Examples and API endpoint definitions.
 
 ## Requirements
 To use this library, you need an account on [app.whal3s.xyz](app.whal3s.xyz), as well as a utility ID. You can get this by creating a utility via the platform.
@@ -38,21 +38,40 @@ To use this library, you need an account on [app.whal3s.xyz](app.whal3s.xyz), as
 Install the **whal3s.js** package with [NPM](https://www.npmjs.org/):
 
 
-    npm install whal3s.js
+    npm install @whal3s/whal3s.js
 
 
 ## Usage
 
-### Initialize Whal3s
 
+### Initialize Whal3s
+```javascript
+ this.whal3s = new Whal3s();
+```
 ### NFT Validation Utility
+To use your NFT validation utility, you need to initialize the utility with your utility ID. You can get your utility ID from the platform or the API.
+
+  
+```javascript
+ this.validationUtility = await this.whal3s.createValidationUtility(id)
+```
+
+#### Connect wallet
+
+#### Select NFT
+
+#### Reservations
+
+#### Claiming
 
 ### Customization
 
+Coming toon
+
 ## ToDo
-- [ ] Wallet connection
-- [ ] NFT Ownership Validation Utility aka token gating
-- [ ] Demo page
+- [x] Wallet connection
+- [x] NFT Ownership Validation Utility aka token gating
+- [x] Demo page
 - [ ] Write tests
 - [ ] Customize wallet-connect-functionallity
 - [ ] GitHub hooks

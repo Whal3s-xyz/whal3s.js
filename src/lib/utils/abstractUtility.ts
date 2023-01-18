@@ -9,6 +9,9 @@ declare module 'axios' {
 }
 
 export abstract class AbstractUtility extends EventTarget {
+
+  protected readonly abortController: AbortController;
+
   protected readonly instance: AxiosInstance;
   protected readonly exceptionHandler: ExceptionHandler
 
@@ -17,6 +20,7 @@ export abstract class AbstractUtility extends EventTarget {
     this.instance = axios.create({
       baseURL
     });
+    this.abortController = new AbortController()
     this.exceptionHandler = new ExceptionHandler()
 
     this._initializeResponseInterceptor();

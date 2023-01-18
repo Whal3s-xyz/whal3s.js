@@ -1,6 +1,6 @@
 {
   "name": "@whal3s/whal3s.js",
-  "version": "0.1",
+  "version": "0.1.4",
   "description": "Whal3s JavaScript Library",
   "main": "build/index.js",
   "types": "build/types/index.d.ts",
@@ -38,8 +38,6 @@
     "@web3-onboard/transaction-preview": "2.0.0",
     "@web3-onboard/walletconnect": "^2.2.2",
     "axios": "^1.2.2",
-    "dotenv": "^16.0.3",
-    "dotenv-webpack": "^8.0.1",
     "eip-712": "^1.0.0",
     "ethers": "^5.7.2"
   },
