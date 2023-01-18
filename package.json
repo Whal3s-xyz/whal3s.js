@@ -37,7 +37,7 @@
     "@web3-onboard/injected-wallets": "^2.5.0",
     "@web3-onboard/transaction-preview": "2.0.0",
     "@web3-onboard/walletconnect": "^2.2.2",
-    "axios": "^1.2.2",
+    "axios": "^1.2.3",
     "dotenv": "^16.0.3",
     "dotenv-webpack": "^8.0.1",
     "eip-712": "^1.0.0",
