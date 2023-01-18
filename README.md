@@ -32,37 +32,46 @@ This library is used to quickly and efficiently integrate the Whal3s developer p
 See the [`whal3s.js` API docs](https://whal3sjs.readme.io/) for Guides, Examples and API endpoint definitions.
 
 ## Requirements
-To use this library, you need an account on [app.whal3s.xyz](app.whal3s.xyz), as well as a utility ID. You can get this by creating a utility via the platform.
+To use this library, you need an account on [app.whal3s.xyz](https://app.whal3s.xyz), as well as a utility ID.
+You can get this by creating a utility via the platform.
 
 ## Installation
 Install the **whal3s.js** package with [NPM](https://www.npmjs.org/):
 
-
     npm install @whal3s/whal3s.js
-
 
 ## Usage
 
 
 ### Initialize Whal3s
 ```javascript
- this.whal3s = new Whal3s();
+ const whal3s = new Whal3s();
 ```
 ### NFT Validation Utility
 To use your NFT validation utility, you need to initialize the utility with your utility ID. You can get your utility ID from the platform or the API.
 
   
 ```javascript
- this.validationUtility = await this.whal3s.createValidationUtility(id)
+ const utility = await whal3s.createValidationUtility(id)
 ```
 
 #### Connect wallet
-
+```javascript
+await utility.connectWallet()
+```
 #### Select NFT
-
+```javascript
+utility.tokenId = tokenId
+```
 #### Reservations
+```javascript
+await utility.reserveEngagement()
+```
 
 #### Claiming
+```javascript
+await utility.storeEngagement({JSON_METADATA})
+```
 
 ### Customization
 
