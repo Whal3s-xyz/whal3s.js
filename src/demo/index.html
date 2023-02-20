@@ -55,15 +55,15 @@
                             <p class="text-white">
                                 Address: <span x-text="walletAddress"></span>
                             </p>
-                            <p class="text-white" x-show="nfts?.valid === true">
+                            <p class="text-white" x-show="validationUtility?.nfts?.valid === true">
                                 Valid: <span
                                     class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">Valid</span>
                             </p>
-                            <p class="text-white" x-show="nfts?.valid === false">
+                            <p class="text-white" x-show="validationUtility?.nfts?.valid === false">
                                 Valid: <span
                                     class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Invalid</span>
                             </p>
-                            <p class="text-white" x-show="nfts?.valid === undefined">
+                            <p class="text-white" x-show="validationUtility?.nfts?.valid === undefined">
                                 Valid: <span
                                     class="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800">Undefined</span>
                             </p>
@@ -94,7 +94,12 @@
                                         Connect wallet
                                     </button>
                                 </template>
-                                <template x-if="step === 2 || step === 3">
+
+                                <template x-if="step === 2">
+                                    <p>Loading NFT data</p>
+                                </template>
+
+                                <template x-if="step === 3 || step === 4 ">
                                     <div>
                                         <p>Select NFT</p>
                                         <template x-if="nfts?.nfts?.length === 0">
@@ -109,9 +114,11 @@
                                                             <img :src="nft.attributes.media[0].thumbnail"
                                                                  alt=""
                                                                  class="pointer-events-none object-cover group-hover:opacity-75">
-                                                            <button type="button" class="absolute inset-0 focus:outline-none"
+                                                            <button type="button"
+                                                                    class="absolute inset-0 focus:outline-none"
                                                                     @click="selectNft(nft.attributes.id.tokenId)">
-                                                                <span class="sr-only" x-text="nft.attributes.title"></span>
+                                                                    <span class="sr-only"
+                                                                          x-text="nft.attributes.title"></span>
                                                             </button>
                                                         </div>
                                                         <p class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900"
@@ -129,7 +136,7 @@
 
                                 </template>
 
-                                <template x-if="step === 3">
+                                <template x-if="step === 4">
                                     <button
                                             @click="reserve"
                                             class="inline-flex items-center rounded-md border border-transparent bg-whal3s-300 px-4 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-whal3s-400 focus:outline-none focus:ring-2 focus:ring-whal3s-300 focus:ring-offset-2"
@@ -137,10 +144,11 @@
                                         Reserve
                                     </button>
                                 </template>
-                                <template x-if="step === 4">
+                                <template x-if="step === 5">
                                     <div>
                                         <div>
-                                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                            <label for="email"
+                                                   class="block text-sm font-medium text-gray-700">Email</label>
                                             <div class="mt-1">
                                                 <input x-model="email" type="email" name="email" id="email"
                                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -157,10 +165,11 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template x-if="step === 5">
+                                <template x-if="step === 6">
                                     <div>
                                         <p>Engagement id: <span x-text="validationUtility.engagement.id"></span></p>
-                                        <p>Engagement status: <span x-text="validationUtility.engagement.status"></span></p>
+                                        <p>Engagement status: <span x-text="validationUtility.engagement.status"></span>
+                                        </p>
                                     </div>
                                 </template>
                             </div>

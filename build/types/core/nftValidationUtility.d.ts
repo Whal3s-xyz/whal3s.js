@@ -2,11 +2,13 @@ import Wallet from './wallet';
 import { EngagementRequest, EngagementResponse, NFTUtility, WalletNftValidationResponse } from '../types/types-internal';
 import { AbstractUtility } from '../utils/abstractUtility';
 declare class NftValidationUtility extends AbstractUtility {
+    static readonly STEP_UNINITIALIZED = 0;
     static readonly STEP_INITIALIZED = 1;
     static readonly STEP_WALLET_CONNECTED = 2;
-    static readonly STEP_TOKEN_SELECTED = 3;
-    static readonly STEP_RESERVED = 4;
-    static readonly STEP_CLAIMED = 5;
+    static readonly STEP_NFTS_FETCHED = 3;
+    static readonly STEP_TOKEN_SELECTED = 4;
+    static readonly STEP_RESERVED = 5;
+    static readonly STEP_CLAIMED = 6;
     private id;
     details: NFTUtility;
     nfts: WalletNftValidationResponse;

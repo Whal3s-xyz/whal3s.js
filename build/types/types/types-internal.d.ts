@@ -66,11 +66,9 @@ type Attribute = {
     };
 };
 export type WalletNftValidationResponse = {
-    nfts: {
-        [key: number]: NFTResponse;
-    };
+    nfts: Array<NFTResponse>;
     error: string[];
-    valid: boolean;
+    valid: boolean | undefined;
 };
 export type CallbackFunctionVariadic = (...args: any[]) => void;
 export type Class = new (...args: any[]) => any;

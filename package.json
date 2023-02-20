@@ -1,6 +1,6 @@
 {
   "name": "@whal3s/whal3s.js",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Whal3s JavaScript Library",
   "main": "build/index.js",
   "types": "build/types/index.d.ts",
@@ -32,10 +32,10 @@
   ],
   "bundledDependencies": [],
   "dependencies": {
-    "@web3-onboard/core": "^2.13.0",
+    "@web3-onboard/core": "^2.15.0",
     "@web3-onboard/gas": "^2.1.4",
-    "@web3-onboard/injected-wallets": "^2.5.0",
-    "@web3-onboard/transaction-preview": "2.0.0",
+    "@web3-onboard/injected-wallets": "^2.8.0",
+    "@web3-onboard/transaction-preview": "^2.0.4",
     "@web3-onboard/walletconnect": "^2.2.2",
     "axios": "^1.2.2",
     "eip-712": "^1.0.0",

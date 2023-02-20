@@ -1,7 +1,7 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, {AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
 
 import ExceptionHandler from '../core/exceptionHandler';
-import {AxiosRequestConfig} from "axios/index";
+// import {AxiosRequestConfig} from "axios/index";
 
 declare module 'axios' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -36,7 +36,7 @@ export abstract class AbstractUtility extends EventTarget {
   private _initializeRequestInterceptor = () => {
     this.instance.interceptors.request.use(this._handleRequest);
   };
-  private _handleRequest = (config: AxiosRequestConfig) => {
+  private _handleRequest = (config: InternalAxiosRequestConfig) => {
     // config.headers['Authorization'] = `Bearer ${this.apiKey}`;
     return config;
   };

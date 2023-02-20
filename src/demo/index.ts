@@ -1,9 +1,7 @@
 import Alpine from 'alpinejs';
-
 import Whal3s from '../lib';
-// import { Wallet, NftValidationUtility, ETH_GOERLI } from '@whal3s/whal3s.js'; Use this with `npm pack` to test the actual library; it replicates the original NPM package.
 
-const id = '8d1015f9-af47-432d-aef2-a35c08a9df59';
+const id = 'd8ede9df-9e48-42c4-abba-57688082a3a7';
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('app', () => ({
@@ -11,11 +9,11 @@ document.addEventListener('alpine:init', () => {
         logs: [],
         whal3s: undefined,
         validationUtility: undefined,
-        nfts: {},
         walletAddress: '',
         tokenId: undefined,
         email: '',
         step: 0,
+        nfts: [],
 
         async init() {
             this.whal3s = new Whal3s();
@@ -24,25 +22,23 @@ document.addEventListener('alpine:init', () => {
                 console.log(this.validationUtility.wallet.address)
                 this.walletAddress = this.validationUtility.wallet.address
             })
-            this.validationUtility.addEventListener('nftsFetched', () => {
-                this.nfts = this.validationUtility.nfts
-            })
             this.initialized = true;
             this.validationUtility.addEventListener('stepChanged', () => {
                 this.step = this.validationUtility.step
-                console.log(this.validationUtility.step)
+                this.nfts = {...this.validationUtility.nfts}
+                console.log(this.nfts)
             })
         },
         connectWallet() {
             this.validationUtility
                 .connectWallet()
-                .catch((error:any) => console.log('Could not connect to wallet', error));
+                .catch((error: any) => console.log('Could not connect to wallet', error));
         },
-        selectNft(tokenId:string){
+        selectNft(tokenId: string) {
             this.validationUtility.tokenId = tokenId
         },
         async reserve() {
-           await this.validationUtility.reserveEngagement()
+            await this.validationUtility.reserveEngagement()
 
         },
         async claim() {

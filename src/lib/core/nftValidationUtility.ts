@@ -12,18 +12,20 @@ import ExceptionHandler from './exceptionHandler';
 
 class NftValidationUtility extends AbstractUtility {
 
+    public static readonly STEP_UNINITIALIZED = 0;
     public static readonly STEP_INITIALIZED = 1;
     public static readonly STEP_WALLET_CONNECTED = 2;
-    public static readonly STEP_TOKEN_SELECTED = 3;
-    public static readonly STEP_RESERVED = 4;
-    public static readonly STEP_CLAIMED = 5;
+    public static readonly STEP_NFTS_FETCHED = 3;
+    public static readonly STEP_TOKEN_SELECTED = 4;
+    public static readonly STEP_RESERVED = 5;
+    public static readonly STEP_CLAIMED = 6;
 
 
     private id: string;
     public details: NFTUtility;
-    public nfts: WalletNftValidationResponse;
+    public nfts: WalletNftValidationResponse = {nfts: [], error: [], valid: undefined};
 
-    private _step = 0
+    private _step = NftValidationUtility.STEP_UNINITIALIZED
     private _tokenId: string
     private _message: string
     private _signature: string
@@ -102,10 +104,14 @@ class NftValidationUtility extends AbstractUtility {
     }
 
     private computeStep() {
+        if (!this.wallet)
+            return this.step = NftValidationUtility.STEP_UNINITIALIZED
         if (!this.wallet.address)
             return this.step = NftValidationUtility.STEP_INITIALIZED
-        if (!this.nfts || !this.tokenId)
+        if (this.nfts === undefined || this.nfts.valid === undefined)
             return this.step = NftValidationUtility.STEP_WALLET_CONNECTED
+        if (this.nfts && !this.tokenId)
+            return this.step = NftValidationUtility.STEP_NFTS_FETCHED
         if (!this.reservation && !this.engagement)
             return this.step = NftValidationUtility.STEP_TOKEN_SELECTED
         if (this.reservation && !this.engagement)
@@ -227,7 +233,7 @@ class NftValidationUtility extends AbstractUtility {
         } catch (e) {
             this.nfts = {
                 nfts: [],
-                valid: false,
+                valid: undefined,
                 error: []
             }
             this.exceptionHandler.catchError(e)

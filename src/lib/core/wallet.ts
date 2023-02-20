@@ -53,7 +53,7 @@ export class Wallet extends EventTarget {
       appMetadata: {
         name: 'Utility app',
         icon: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
-        logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
+        logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/Whal3s_black.png',
         description: 'Whal3s powered application',
         recommendedInjectedWallets: [
           { name: 'MetaMask', url: 'https://metamask.io' }
