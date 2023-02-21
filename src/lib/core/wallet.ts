@@ -1,20 +1,20 @@
 import Onboard, {
-  InitOptions,
-  OnboardAPI,
-  WalletState
+    InitOptions,
+    OnboardAPI,
+    WalletState
 } from '@web3-onboard/core';
 import injectedModule from '@web3-onboard/injected-wallets';
 import walletConnectModule from '@web3-onboard/walletconnect';
-import { Bytes, ethers, providers } from 'ethers';
+import {Bytes, ethers, providers} from 'ethers';
 import {
-  ETH_GOERLI,
-  ETH_MAINNET,
-  MATIC_MAINNET,
-  MATIC_MUMBAI,
-  NETWORKS
+    ETH_GOERLI,
+    ETH_MAINNET,
+    MATIC_MAINNET,
+    MATIC_MUMBAI,
+    NETWORKS
 } from './networks';
-import { Network } from '../types/types-internal';
-import { asyncSome } from '../helpers';
+import {Network} from '../types/types-internal';
+import {asyncSome} from '../helpers';
 import ExceptionHandler from './exceptionHandler';
 
 const walletConnect = walletConnectModule();
@@ -23,138 +23,139 @@ const injected = injectedModule();
 type NetworkArguments = Network | keyof typeof NETWORKS;
 
 export const SUPPORTED_WALLETS = {
-  INJECTED: injected,
-  WALLET_CONNECT: walletConnect
+    INJECTED: injected,
+    WALLET_CONNECT: walletConnect
 };
 
 export class Wallet extends EventTarget {
-  private static _instance: InstanceType<typeof Wallet>;
+    private static _instance: InstanceType<typeof Wallet>;
 
-  private readonly exceptionHandler: ExceptionHandler
-  private _address: string | undefined;
-  public onboard: OnboardAPI | undefined;
-  signer: providers.JsonRpcSigner | undefined | ethers.Signer;
-  ethersProvider: providers.Web3Provider | undefined;
+    private readonly exceptionHandler: ExceptionHandler
+    public onboard: OnboardAPI | undefined;
+    ethersProvider: providers.Web3Provider | undefined;
 
-  constructor(walletConfig: InitOptions) {
-    super();
+    constructor(walletConfig: InitOptions) {
+        super();
 
-    if (Wallet._instance) {
-      return Wallet._instance;
-    }
-
-    this.exceptionHandler = new ExceptionHandler()
-    Wallet._instance = this;
-
-    // assumes default that can and should be overridden
-    this.onboard = Onboard({
-      wallets: [injected, walletConnect],
-      chains: [ETH_MAINNET, ETH_GOERLI, MATIC_MAINNET, MATIC_MUMBAI],
-      appMetadata: {
-        name: 'Utility app',
-        icon: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
-        logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/Whal3s_black.png',
-        description: 'Whal3s powered application',
-        recommendedInjectedWallets: [
-          { name: 'MetaMask', url: 'https://metamask.io' }
-        ]
-      },
-      accountCenter: {
-        desktop: {
-          enabled: false
-        },
-        mobile: {
-          enabled: false
+        if (Wallet._instance) {
+            return Wallet._instance;
         }
-      },
-      connect: {
-        autoConnectLastWallet: true
-      },
-      ...walletConfig
-    });
-  }
+
+        this.exceptionHandler = new ExceptionHandler()
+        Wallet._instance = this;
+
+        // assumes default that can and should be overridden
+        this.onboard = Onboard({
+            wallets: [injected, walletConnect],
+            chains: [ETH_MAINNET, ETH_GOERLI, MATIC_MAINNET, MATIC_MUMBAI],
+            appMetadata: {
+                name: 'Utility app',
+                icon: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/280x280.png',
+                logo: 'https://whal3s-assets.s3.eu-central-1.amazonaws.com/logos/Whal3s_black.png',
+                description: 'Whal3s powered application',
+                recommendedInjectedWallets: [
+                    {name: 'MetaMask', url: 'https://metamask.io'}
+                ]
+            },
+            accountCenter: {
+                desktop: {
+                    enabled: true
+                },
+                mobile: {
+                    enabled: true
+                }
+            },
+            connect: {
+                autoConnectLastWallet: true
+            },
+            ...walletConfig
+        });
+        this.onboard.state.select('wallets').subscribe((update) => {
+            this.dispatchEvent(new CustomEvent('addressChanged', {detail: {address: update[0]?.accounts[0]?.address}}))
+        })
 
 
-  get address(): string | undefined {
-    return this._address;
-  }
-
-  set address(value: string | undefined) {
-
-    const oldValue = this._address
-    this._address = value;
-
-    if (oldValue !== value){
-      this.dispatchEvent(new CustomEvent('addressChanged', {detail: {address: value}}))
     }
-  }
 
-  private getNetwork(network: NetworkArguments): Network {
-    return typeof network === 'string' ? NETWORKS[network] : network;
-  }
 
-  connect = async (network: NetworkArguments): Promise<boolean> => {
-    network = this.getNetwork(network);
-
-    try {
-      const wallets = await this.onboard.connectWallet();
-      await this.onboard.setChain({ chainId: network.id });
-      if (wallets[0]) {
-        // create an ethers provider with the last connected wallet provider
-        this.ethersProvider = new ethers.providers.Web3Provider(
-          wallets[0].provider,
-          'any'
-        );
-        this.signer = this.ethersProvider.getSigner();
-        this.address = await this.signer.getAddress();
-        return true;
-      } else {
-        console.log('noWalletSelected');
-        this.exceptionHandler.handleError(
-          new Error('No wallet selected'),
-          ExceptionHandler.Type.INTERACTION
-        );
-      }
-    } catch (error) {
-      this.exceptionHandler.catchError(error);
+    get address(): string | undefined {
+        const state = this.onboard.state.get()
+        return state.wallets[0]?.accounts[0]?.address
     }
-  };
 
-  public switchNetwork = async (
-    network: NetworkArguments
-  ): Promise<boolean> => {
-    network = this.getNetwork(network);
-
-    try {
-      const success = await this.onboard.setChain({ chainId: network.id });
-      if (success) {
-        return true;
-      } else {
-        this.exceptionHandler.handleError(
-          new Error('User rejected request'),
-          ExceptionHandler.Type.INTERACTION
-        );
-      }
-    } catch (e) {
-      this.exceptionHandler.catchError(e);
+    get signer(): providers.JsonRpcSigner | undefined | ethers.Signer {
+        const state = this.onboard.state.get()
+        const ethersProvider = new ethers.providers.Web3Provider(state.wallets[0]?.provider, 'any')
+        return ethersProvider.getSigner()
     }
-  };
 
-  public signMessage = async (message: Bytes | string): Promise<string> => {
-    try {
-      return await this.signer.signMessage(message);
-    } catch (e) {
-      this.exceptionHandler.catchError(e);
+
+    private getNetwork(network: NetworkArguments): Network {
+        return typeof network === 'string' ? NETWORKS[network] : network;
     }
-  };
 
-  public onSameNetwork = async (network: keyof typeof NETWORKS) => {
-    const wallets = this.onboard.state.get().wallets;
+    connect = async (network: NetworkArguments): Promise<boolean> => {
+        network = this.getNetwork(network);
 
-    return asyncSome<WalletState>(wallets, async (wallet) => {
-      const chainId = await wallet.provider.request({ method: 'eth_chainId' });
-      return chainId === NETWORKS[network].id;
-    });
-  };
+        try {
+
+            const currentState = this.onboard.state.get()
+
+            let wallets = currentState.wallets
+            if (currentState.wallets.length === 0)
+                wallets = await this.onboard.connectWallet();
+
+
+            if (wallets.length === 0) {
+                this.exceptionHandler.handleError(
+                    new Error('No wallet selected'),
+                    ExceptionHandler.Type.INTERACTION
+                );
+            }
+            await this.onboard.setChain({chainId: network.id});
+            return true
+
+        } catch (error) {
+            this.exceptionHandler.catchError(error);
+        }
+    };
+
+    public switchNetwork = async (
+        network: NetworkArguments
+    ): Promise<boolean> => {
+        network = this.getNetwork(network);
+
+        try {
+            const success = await this.onboard.setChain({chainId: network.id});
+            if (success) {
+                return true;
+            } else {
+                this.exceptionHandler.handleError(
+                    new Error('User rejected request'),
+                    ExceptionHandler.Type.INTERACTION
+                );
+            }
+        } catch (e) {
+            this.exceptionHandler.catchError(e);
+        }
+    };
+
+    public signMessage = async (message: Bytes | string): Promise<string> => {
+        try {
+            return await this.signer.signMessage(message);
+        } catch (e) {
+            this.exceptionHandler.catchError(e);
+        }
+    };
+
+    public onSameNetwork = async (network: keyof typeof NETWORKS) => {
+        const wallets = this.onboard.state.get().wallets;
+
+        return asyncSome<WalletState>(wallets, async (wallet) => {
+            const chainId = await wallet.provider.request({method: 'eth_chainId'});
+            return chainId === NETWORKS[network].id;
+        });
+    };
 }
+
 export default Wallet;

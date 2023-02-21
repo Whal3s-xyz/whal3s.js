@@ -12,13 +12,13 @@ import ExceptionHandler from './exceptionHandler';
 
 class NftValidationUtility extends AbstractUtility {
 
-    public static readonly STEP_UNINITIALIZED = 0;
-    public static readonly STEP_INITIALIZED = 1;
-    public static readonly STEP_WALLET_CONNECTED = 2;
-    public static readonly STEP_NFTS_FETCHED = 3;
-    public static readonly STEP_TOKEN_SELECTED = 4;
-    public static readonly STEP_RESERVED = 5;
-    public static readonly STEP_CLAIMED = 6;
+    public static readonly STEP_UNINITIALIZED: number = 0;
+    public static readonly STEP_INITIALIZED: number = 1;
+    public static readonly STEP_WALLET_CONNECTED: number = 2;
+    public static readonly STEP_NFTS_FETCHED: number = 3;
+    public static readonly STEP_TOKEN_SELECTED: number = 4;
+    public static readonly STEP_RESERVED: number = 5;
+    public static readonly STEP_CLAIMED: number = 6;
 
 
     private id: string;
@@ -127,9 +127,16 @@ class NftValidationUtility extends AbstractUtility {
         const validationUtilityInstance = new NftValidationUtility();
         validationUtilityInstance.id = id;
         validationUtilityInstance.wallet = wallet;
-
         validationUtilityInstance.details = await validationUtilityInstance.sendGetValidationUtilityRequest();
-        validationUtilityInstance.wallet.addEventListener('addressChanged', () => validationUtilityInstance.fetchNfts(), {signal: validationUtilityInstance.abortController.signal})
+        if (validationUtilityInstance.wallet.address)
+            validationUtilityInstance.fetchNfts()
+        validationUtilityInstance.wallet.addEventListener('addressChanged', () => {
+            validationUtilityInstance.tokenId = undefined
+            if (validationUtilityInstance.wallet.address)
+                validationUtilityInstance.fetchNfts()
+            validationUtilityInstance.computeStep()
+
+        }, {signal: validationUtilityInstance.abortController.signal})
         validationUtilityInstance.computeStep()
         return validationUtilityInstance;
     }

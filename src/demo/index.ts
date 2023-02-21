@@ -18,16 +18,20 @@ document.addEventListener('alpine:init', () => {
         async init() {
             this.whal3s = new Whal3s();
             this.validationUtility = await this.whal3s.createValidationUtility(id)
+            this.step = this.validationUtility.step
             this.validationUtility.addEventListener('walletConnected', () => {
                 console.log(this.validationUtility.wallet.address)
                 this.walletAddress = this.validationUtility.wallet.address
             })
-            this.initialized = true;
             this.validationUtility.addEventListener('stepChanged', () => {
                 this.step = this.validationUtility.step
-                this.nfts = {...this.validationUtility.nfts}
-                console.log(this.nfts)
             })
+            this.validationUtility.addEventListener('nftsFetched', () => {
+                console.log(this.validationUtility.nfts)
+                this.nfts = {...this.validationUtility.nfts}
+            })
+            this.initialized = true;
+
         },
         connectWallet() {
             this.validationUtility
