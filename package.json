@@ -1,6 +1,6 @@
 {
   "name": "@whal3s/whal3s.js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Whal3s JavaScript Library",
   "main": "build/index.js",
   "types": "build/types/index.d.ts",
