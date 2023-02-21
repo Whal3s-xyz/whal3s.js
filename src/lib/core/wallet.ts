@@ -67,7 +67,9 @@ export class Wallet extends EventTarget {
           enabled: false
         }
       },
-
+      connect: {
+        autoConnectLastWallet: true
+      },
       ...walletConfig
     });
   }
