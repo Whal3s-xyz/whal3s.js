@@ -130,6 +130,7 @@ class NftValidationUtility extends AbstractUtility {
 
         validationUtilityInstance.details = await validationUtilityInstance.sendGetValidationUtilityRequest();
         validationUtilityInstance.wallet.addEventListener('addressChanged', () => validationUtilityInstance.fetchNfts(), {signal: validationUtilityInstance.abortController.signal})
+        validationUtilityInstance.computeStep()
         return validationUtilityInstance;
     }
 
