@@ -17,6 +17,7 @@ document.addEventListener('alpine:init', () => {
 
         async init() {
             this.whal3s = new Whal3s();
+            console.log('initialized')
             this.validationUtility = await this.whal3s.createValidationUtility(id)
             this.step = this.validationUtility.step
             this.validationUtility.addEventListener('walletConnected', () => {

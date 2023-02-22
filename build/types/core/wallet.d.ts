@@ -10,13 +10,12 @@ export declare const SUPPORTED_WALLETS: {
 export declare class Wallet extends EventTarget {
     private static _instance;
     private readonly exceptionHandler;
-    private _address;
     onboard: OnboardAPI | undefined;
-    signer: providers.JsonRpcSigner | undefined | ethers.Signer;
     ethersProvider: providers.Web3Provider | undefined;
+    private _lastWalletState;
     constructor(walletConfig: InitOptions);
     get address(): string | undefined;
-    set address(value: string | undefined);
+    get signer(): providers.JsonRpcSigner | undefined | ethers.Signer;
     private getNetwork;
     connect: (network: NetworkArguments) => Promise<boolean>;
     switchNetwork: (network: NetworkArguments) => Promise<boolean>;

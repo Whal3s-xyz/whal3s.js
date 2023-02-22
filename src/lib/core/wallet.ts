@@ -34,6 +34,8 @@ export class Wallet extends EventTarget {
     public onboard: OnboardAPI | undefined;
     ethersProvider: providers.Web3Provider | undefined;
 
+    private _lastWalletState: WalletState | undefined;
+
     constructor(walletConfig: InitOptions) {
         super();
 
@@ -71,7 +73,10 @@ export class Wallet extends EventTarget {
             ...walletConfig
         });
         this.onboard.state.select('wallets').subscribe((update) => {
-            this.dispatchEvent(new CustomEvent('addressChanged', {detail: {address: update[0]?.accounts[0]?.address}}))
+            if (update[0]?.accounts[0]?.address !== this._lastWalletState?.accounts[0]?.address) {
+                this._lastWalletState = update[0]
+                this.dispatchEvent(new CustomEvent('addressChanged', {detail: {address: update[0]?.accounts[0]?.address}}))
+            }
         })
 
 

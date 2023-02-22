@@ -164,7 +164,6 @@ class NftValidationUtility extends AbstractUtility {
     }
 
     public async connectWallet() {
-
         try {
             await this.wallet.connect(this.details.network);
         } catch (e) {
