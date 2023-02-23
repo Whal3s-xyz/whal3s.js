@@ -131,10 +131,9 @@ class NftValidationUtility extends AbstractUtility {
         if (validationUtilityInstance.wallet.address)
             validationUtilityInstance.fetchNfts()
         validationUtilityInstance.wallet.addEventListener('addressChanged', () => {
-            validationUtilityInstance.tokenId = undefined
+            validationUtilityInstance.resetUserData()
             if (validationUtilityInstance.wallet.address)
                 validationUtilityInstance.fetchNfts()
-            validationUtilityInstance.computeStep()
 
         }, {signal: validationUtilityInstance.abortController.signal})
         validationUtilityInstance.computeStep()
@@ -249,6 +248,16 @@ class NftValidationUtility extends AbstractUtility {
         this.computeStep()
         return this.nfts
 
+    }
+
+    public resetUserData() {
+        this._tokenId = undefined
+        this.nfts = {nfts: [], error: [], valid: undefined}
+        this._reservation = null
+        this._engagement = null
+        this._message = ''
+        this._signature = ''
+        this.computeStep()
     }
 
     //API methods

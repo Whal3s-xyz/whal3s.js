@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers/dist/refresh.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -124,6 +125,7 @@
                                                         <p class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900"
                                                            x-text="nft.attributes.title">
                                                         </p>
+                                                        <p x-text="nft.attributes.id.tokenId"></p>
                                                         <p class="pointer-events-none block text-sm font-medium text-gray-500"
                                                            x-text="nft.valid ? 'valid' : 'invalid'"></p>
                                                         </p>
@@ -178,10 +180,23 @@
                         <div class="overflow-hidden rounded-lg bg-white shadow p-6 mt-4">
                             <div>
                                 <p>Initialized utlity:</p>
-                                <span>Utility ID:</span><span x-text="validationUtility?.details?.id"></span>
+                                <span>Utility ID:</span><span x-text="utilityData.id"></span>
                                 <br/>
-                                <span>Network:</span
-                                ><span x-text="validationUtility?.details?.network"></span>
+                                <span>Network:</span><span x-text="utilityData.network"></span>
+                                <br/>
+                                <span>Address:</span><span x-text="utilityData.address"></span>
+                                <br/>
+                                <span>Token ID:</span><span x-text="utilityData.tokenId"></span>
+                                <br/>
+                                <span>Message:</span><span x-text="utilityData.message"></span>
+                                <br/>
+                                <span>Signature:</span><span x-text="utilityData?.signature"></span>
+                                <br>
+                                <button
+                                        @click="refresh"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Refresh
+                                </button>
                             </div>
                         </div>
                     </section>

@@ -40,6 +40,7 @@ declare class NftValidationUtility extends AbstractUtility {
     reserveEngagement(): Promise<EngagementResponse>;
     storeEngagement(metadata?: any): Promise<EngagementResponse>;
     fetchNfts(): Promise<WalletNftValidationResponse>;
+    resetUserData(): void;
     private sendGetValidationUtilityRequest;
     private sendGetAllNftWalletRequest;
     private sendGetMessageRequest;

@@ -14,18 +14,24 @@ document.addEventListener('alpine:init', () => {
         email: '',
         step: 0,
         nfts: [],
+        utilityData: {
+            id: '',
+            network: '',
+            address: '',
+            tokenId: '',
+            message: '',
+            signature: '',
+        },
 
         async init() {
             this.whal3s = new Whal3s();
             console.log('initialized')
             this.validationUtility = await this.whal3s.createValidationUtility(id)
             this.step = this.validationUtility.step
-            this.validationUtility.addEventListener('walletConnected', () => {
-                console.log(this.validationUtility.wallet.address)
-                this.walletAddress = this.validationUtility.wallet.address
-            })
             this.validationUtility.addEventListener('stepChanged', () => {
                 this.step = this.validationUtility.step
+                this.walletAddress = this.validationUtility.wallet.address
+                this.updateUtilityData()
             })
             this.validationUtility.addEventListener('nftsFetched', () => {
                 console.log(this.validationUtility.nfts)
@@ -40,6 +46,7 @@ document.addEventListener('alpine:init', () => {
                 .catch((error: any) => console.log('Could not connect to wallet', error));
         },
         selectNft(tokenId: string) {
+            console.log(tokenId)
             this.validationUtility.tokenId = tokenId
         },
         async reserve() {
@@ -48,8 +55,17 @@ document.addEventListener('alpine:init', () => {
         },
         async claim() {
             await this.validationUtility.storeEngagement({email: this.email})
+        },
+        updateUtilityData() {
+            this.utilityData = {
+                id: this.validationUtility.details.id,
+                network: this.validationUtility.details.network,
+                address: this.validationUtility.wallet.address,
+                tokenId: this.validationUtility.tokenId,
+                message: this.validationUtility.message,
+                signature: this.validationUtility.signature,
+            }
         }
-
     }));
 });
 
