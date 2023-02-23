@@ -74,7 +74,7 @@ export class Wallet extends EventTarget {
         });
         this.onboard.state.select('wallets').subscribe((update) => {
             if (update[0]?.accounts[0]?.address !== this._lastWalletState?.accounts[0]?.address) {
-                this._lastWalletState = update[0]
+                this._lastWalletState = {...update[0]}
                 this.dispatchEvent(new CustomEvent('addressChanged', {detail: {address: update[0]?.accounts[0]?.address}}))
             }
         })
