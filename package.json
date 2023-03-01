@@ -32,7 +32,7 @@
   ],
   "bundledDependencies": [],
   "dependencies": {
-    "@web3-onboard/core": "^2.15.0",
+    "@web3-onboard/core": "^2.15.4",
     "@web3-onboard/gas": "^2.1.4",
     "@web3-onboard/injected-wallets": "^2.8.0",
     "@web3-onboard/transaction-preview": "^2.0.4",
