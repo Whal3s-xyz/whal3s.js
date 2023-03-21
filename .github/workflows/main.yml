@@ -6,6 +6,8 @@ on:
       - README.md
       - .gitignore
       - .github/**
+  workflow_dispatch:
+
 
 jobs:
   build:
@@ -15,9 +17,9 @@ jobs:
         node-version: [19.x]
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
       - name: npm install, build, and test
@@ -25,4 +27,4 @@ jobs:
           npm install
           npm run test
         env:
-          CI: true
+          CI: false
