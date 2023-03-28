@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node_version }}
-          
+
       - name: npm install, build, and test
         run: |
           npm install
@@ -34,7 +34,7 @@ jobs:
           git config --local --list
           git checkout master
           git config user.email "$GH_EMAIL"
-          git config user.name "Francisco Hodge"
+          git config user.name "Jonas Esser"
         env:
           GH_EMAIL: ${{secrets.GH_EMAIL}}
 
