@@ -25,7 +25,6 @@ document.addEventListener('alpine:init', () => {
 
         async init() {
             this.whal3s = new Whal3s();
-            console.log('initialized')
             this.validationUtility = await this.whal3s.createValidationUtility(id)
             this.step = this.validationUtility.step
             this.validationUtility.addEventListener('stepChanged', () => {
@@ -34,7 +33,6 @@ document.addEventListener('alpine:init', () => {
                 this.updateUtilityData()
             })
             this.validationUtility.addEventListener('nftsFetched', () => {
-                console.log(this.validationUtility.nfts)
                 this.nfts = {...this.validationUtility.nfts}
             })
             this.initialized = true;
@@ -46,7 +44,6 @@ document.addEventListener('alpine:init', () => {
                 .catch((error: any) => console.log('Could not connect to wallet', error));
         },
         selectNft(tokenId: string) {
-            console.log(tokenId)
             this.validationUtility.tokenId = tokenId
         },
         async reserve() {
