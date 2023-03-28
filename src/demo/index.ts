@@ -56,6 +56,10 @@ document.addEventListener('alpine:init', () => {
         async claim() {
             await this.validationUtility.storeEngagement({email: this.email})
         },
+        async sign() {
+            await this.validationUtility.sign()
+            this.updateUtilityData()
+        },
         updateUtilityData() {
             this.utilityData = {
                 id: this.validationUtility.details.id,

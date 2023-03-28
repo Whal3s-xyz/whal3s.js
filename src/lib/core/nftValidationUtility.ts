@@ -250,6 +250,17 @@ class NftValidationUtility extends AbstractUtility {
 
     }
 
+    public async sign() {
+        this.checkWalletIsConnected()
+        if (!this.message) {
+            const messageResponse = await this.sendGetMessageRequest()
+            this.message = messageResponse.message
+        }
+        this.signature = await this.wallet.signMessage(this.message)
+        this.dispatchEvent(new CustomEvent('signed', {detail: {signature: this.signature}}))
+        return this.signature
+    }
+
     public resetUserData() {
         this._tokenId = undefined
         this.nfts = {nfts: [], error: [], valid: undefined}
@@ -294,6 +305,8 @@ class NftValidationUtility extends AbstractUtility {
             `user/nft-validation-utilities/${this.id}/engagements`,
             params
         );
+
+
 
     public destroy() {
         this.abortController.abort()
