@@ -24,7 +24,18 @@ document.addEventListener('alpine:init', () => {
         },
 
         async init() {
-            this.whal3s = new Whal3s();
+            this.whal3s = new Whal3s({
+                accountCenter: {
+                    mobile: {
+                        enabled: true,
+                        position: 'bottomRight',
+                    },
+                    desktop: {
+                        enabled: true,
+                        position: 'bottomRight',
+                    }
+                }
+            });
             this.validationUtility = await this.whal3s.createValidationUtility(id)
             this.step = this.validationUtility.step
             this.validationUtility.addEventListener('stepChanged', () => {

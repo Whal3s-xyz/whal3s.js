@@ -36,7 +36,7 @@ export class Wallet extends EventTarget {
 
     private _lastWalletState: WalletState | undefined;
 
-    constructor(walletConfig: InitOptions) {
+    constructor(walletConfig: Partial<InitOptions>) {
         super();
 
         if (Wallet._instance) {
