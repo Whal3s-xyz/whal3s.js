@@ -13,7 +13,7 @@ export declare class Wallet extends EventTarget {
     onboard: OnboardAPI | undefined;
     ethersProvider: providers.Web3Provider | undefined;
     private _lastWalletState;
-    constructor(walletConfig: InitOptions);
+    constructor(walletConfig: Partial<InitOptions>);
     get address(): string | undefined;
     get signer(): providers.JsonRpcSigner | undefined | ethers.Signer;
     private getNetwork;
