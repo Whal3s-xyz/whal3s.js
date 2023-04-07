@@ -26,9 +26,15 @@
   },
   "homepage": "https://www.whal3s.xyz/",
   "keywords": [
-    "library",
-    "starter",
-    "es6"
+    "web3",
+    "whal3s",
+    "es6",
+    "typescript",
+    "ethereum",
+    "wallet",
+    "onboard",
+    "web3modal",
+    "web3connect"
   ],
   "bundledDependencies": [],
   "dependencies": {
