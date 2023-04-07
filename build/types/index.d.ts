@@ -4,7 +4,7 @@ import NftValidationUtility from './core/nftValidationUtility';
 import Wallet, { SUPPORTED_WALLETS } from './core/wallet';
 declare class Whal3s {
     wallet: Wallet;
-    constructor(walletConfig?: WalletInitOptions);
+    constructor(walletConfig?: Partial<WalletInitOptions>);
     createValidationUtility(id: string): Promise<NftValidationUtility>;
 }
 export default Whal3s;
