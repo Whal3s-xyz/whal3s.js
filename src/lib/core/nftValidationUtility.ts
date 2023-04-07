@@ -23,7 +23,7 @@ class NftValidationUtility extends AbstractUtility {
 
     private id: string;
     public details: NFTUtility;
-    public nfts: WalletNftValidationResponse = {nfts: [], error: [], valid: undefined};
+    public nfts: WalletNftValidationResponse = {nfts: [], errors: [], valid: undefined};
 
     private _step = NftValidationUtility.STEP_UNINITIALIZED
     private _tokenId: string
@@ -240,7 +240,7 @@ class NftValidationUtility extends AbstractUtility {
             this.nfts = {
                 nfts: [],
                 valid: undefined,
-                error: []
+                errors: []
             }
             this.exceptionHandler.catchError(e)
         }
@@ -263,7 +263,7 @@ class NftValidationUtility extends AbstractUtility {
 
     public resetUserData() {
         this._tokenId = undefined
-        this.nfts = {nfts: [], error: [], valid: undefined}
+        this.nfts = {nfts: [], errors: [], valid: undefined}
         this._reservation = null
         this._engagement = null
         this._message = ''

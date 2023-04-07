@@ -21,6 +21,7 @@ document.addEventListener('alpine:init', () => {
             tokenId: '',
             message: '',
             signature: '',
+            nfts: {},
         },
 
         async init() {
@@ -76,6 +77,7 @@ document.addEventListener('alpine:init', () => {
                 tokenId: this.validationUtility.tokenId,
                 message: this.validationUtility.message,
                 signature: this.validationUtility.signature,
+                nfts: this.validationUtility.nfts,
             }
         }
     }));

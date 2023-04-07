@@ -192,6 +192,8 @@
                                 <br/>
                                 <span>Signature:</span><span x-text="utilityData?.signature"></span>
                                 <br>
+                                <span>NFT errors:</span><span x-text="JSON.stringify(utilityData?.nfts?.errors)"></span>
+                                <br>
                                 <button
                                         @click="refresh"
                                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
