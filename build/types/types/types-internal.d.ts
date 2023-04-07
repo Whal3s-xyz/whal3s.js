@@ -35,7 +35,7 @@ export type EngagementResponse = {
 type NFTResponse = {
     attributes: Attribute;
     engagements: EngagementResponse[];
-    error: string[];
+    errors: string[];
     valid: boolean;
 };
 type Attribute = {
@@ -67,7 +67,7 @@ type Attribute = {
 };
 export type WalletNftValidationResponse = {
     nfts: Array<NFTResponse>;
-    error: string[];
+    errors: string[];
     valid: boolean | undefined;
 };
 export type CallbackFunctionVariadic = (...args: any[]) => void;
