@@ -29,7 +29,7 @@ Developer platform to easily create, deliver & manage any kind of token utility.
 This library is used to quickly and efficiently integrate the Whal3s developer platform into your existing tech stack. It is written in TypeScript, but thanks to UMD build it also offers support for vanilla JS or frameworks like React or Angular.
 
 ## Documentation
-See the [`whal3s.js` API docs](https://whal3sjs.readme.io/) for Guides, Examples and API endpoint definitions.
+See the [`whal3s.js` API docs](https://docs.whal3s.xyz/reference/whal3s-js-get-started) for Guides, Examples and API endpoint definitions.
 
 ## Requirements
 To use this library, you need an account on [app.whal3s.xyz](https://app.whal3s.xyz), as well as a utility ID.
@@ -48,7 +48,10 @@ Install the **whal3s.js** package with [NPM](https://www.npmjs.org/):
  const whal3s = new Whal3s();
 ```
 ### NFT Validation Utility
-To use your NFT validation utility, you need to initialize the utility with your utility ID. You can get your utility ID from the platform or the API.
+To use your NFT validation utility, you need to initialize the utility with your utility ID. 
+You can get your utility ID from the platform or the API.
+
+But be careful. Whal3s utilities are working in steps. [Read the documentation carefully](https://docs.whal3s.xyz/reference/steps).
 
   
 ```javascript
@@ -58,6 +61,10 @@ To use your NFT validation utility, you need to initialize the utility with your
 #### Connect wallet
 ```javascript
 await utility.connectWallet()
+```
+#### Sign message
+```javascript
+await utility.sign()
 ```
 #### Select NFT
 ```javascript
@@ -73,18 +80,34 @@ await utility.reserveEngagement()
 await utility.storeEngagement({JSON_METADATA})
 ```
 
+
+
 ### Customization
 
-Coming toon
+Whal3s is developed in partnership with Blocknatives' web3-onboard.
+You can customize the wallet connection modal by passing initOptions to the Whal3s constructor.
+
+```javascript
+const whal3s = new Whal3s({
+  accountCenter: {
+      //...
+  }
+})
+```
+
+Find all available options [here](https://onboard.blocknative.com/docs/modules/core#initialization).
+
+
+```javascript
 
 ## ToDo
 - [x] Wallet connection
 - [x] NFT Ownership Validation Utility aka token gating
 - [x] Demo page
 - [ ] Write tests
-- [ ] Customize wallet-connect-functionallity
-- [ ] GitHub hooks
-- [ ] Deploy to npm
+- [x] Customize wallet-connect-functionallity
+- [x] GitHub hooks
+- [x] Deploy to npm
 
 
 
