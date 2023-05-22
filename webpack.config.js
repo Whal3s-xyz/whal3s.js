@@ -4,12 +4,12 @@ const TerserPlugin = require('terser-webpack-plugin');
 const getPackageJson = require('./scripts/getPackageJson');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const { version, name, license, repository, author } = getPackageJson(
-  'version',
-  'name',
-  'license',
-  'repository',
-  'author'
+const {version, name, license, repository, author} = getPackageJson(
+    'version',
+    'name',
+    'license',
+    'repository',
+    'author'
 );
 
 const banner = `
@@ -23,68 +23,71 @@ const banner = `
 `;
 
 module.exports = {
-  mode: 'production',
-  devtool: 'source-map',
-  entry: './src/lib/index.ts',
-  output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'build'),
-    library: 'Whal3s',
-    libraryTarget: 'umd',
-    clean: true
-  },
-  externals: [
-    '@web3-onboard/injected-wallets',
-    '@web3-onboard/core',
-    '@web3-onboard/walletconnect'
-  ],
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({ extractComments: false }),
-      new CssMinimizerPlugin()
-    ]
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(m|j|t)s$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.(sa|sc|c)ss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          { loader: 'css-loader', options: { sourceMap: true } }
+    mode: 'development',
+    devtool: 'source-map',
+    entry: './src/index.ts',
+    output: {
+        globalObject: 'this',
+        // globalObject: `typeof self !== 'undefined' ? self : this`,
+        filename: 'index.js',
+        path: path.resolve(__dirname, 'build'),
+        library: 'Whal3s',
+        libraryTarget: 'umd',
+        clean: true
+    },
+    externals: [
+        '@web3-onboard/injected-wallets',
+        '@web3-onboard/core',
+        '@web3-onboard/walletconnect'
+    ],
+    optimization: {
+        // TODO: enable
+        minimize: false,
+        minimizer: [
+            new TerserPlugin({extractComments: false}),
+            new CssMinimizerPlugin()
         ]
-      }
-    ]
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'css/index.css'
-    }),
-    new webpack.BannerPlugin(banner),
-    new webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer']
-    })
-  ],
-  resolve: {
-    extensions: ['.ts', '.js', '.json'],
-    alias: {
-      assert: 'assert',
-      buffer: 'buffer',
-      crypto: 'crypto-browserify',
-      http: 'stream-http',
-      https: 'https-browserify',
-      os: 'os-browserify/browser',
-      process: 'process/browser',
-      stream: 'stream-browserify',
-      util: 'util'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.(m|j|t)s$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                }
+            },
+            {
+                test: /\.(sa|sc|c)ss$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {loader: 'css-loader', options: {sourceMap: true}}
+                ]
+            }
+        ]
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'css/index.css'
+        }),
+        new webpack.BannerPlugin(banner),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+            Buffer: ['buffer', 'Buffer']
+        })
+    ],
+    resolve: {
+        extensions: ['.ts', '.js', '.json'],
+        alias: {
+            assert: 'assert',
+            buffer: 'buffer',
+            crypto: 'crypto-browserify',
+            http: 'stream-http',
+            https: 'https-browserify',
+            os: 'os-browserify/browser',
+            process: 'process/browser',
+            stream: 'stream-browserify',
+            util: 'util'
+        }
     }
-  }
 };

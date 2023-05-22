@@ -5,6 +5,8 @@ export const ETH_MAINNET_RPC =
   'https://eth-mainnet.g.alchemy.com/v2/0CD8wxEZV2mm-62-K1n-1b6lwb8J-0Vh';
 export const ETH_GOERLI_RPC =
   'https://eth-goerli.g.alchemy.com/v2/TijWHAm4zYTPpHAdX5Iwvy5FfurbMj7e';
+export const ETH_SEPOLIA_RPC =
+  'https://eth-sepolia.g.alchemy.com/v2/VVl4fUNmsN65RvsHfFEHtDjDneuRT1o3';
 export const MATIC_MUMBAI_RPC =
   'https://polygon-mumbai.g.alchemy.com/v2/N1p19q1m7-2BEiXFcnHaoqC5sOBIdAt8';
 export const MATIC_MAINNET_RPC =
@@ -14,6 +16,7 @@ export default {
   API_URL,
   ETH_MAINNET_RPC,
   ETH_GOERLI_RPC,
+  ETH_SEPOLIA_RPC,
   MATIC_MUMBAI_RPC,
   MATIC_MAINNET_RPC
 };

@@ -1,11 +1,8 @@
 import { NETWORKS } from '../core/networks';
+import {Bytes, ethers, providers} from "ethers";
 
-export interface Network {
-  id: string;
-  token: string;
-  label: string;
-  rpcUrl: string;
-}
+export type NetworkArguments = Network | keyof typeof NETWORKS;
+
 
 export type NFTUtility = {
   id: string;
@@ -82,6 +79,24 @@ export type CallbackFunctionVariadic = (...args: any[]) => void;
 export type Class = new (...args: any[]) => any;
 export type AbstractClass =  abstract new (...args: any[]) => any;
 
+
+export interface  Network {
+  id: number;
+  token: string;
+  label: string;
+  rpcUrl: string;
+}
+
+export interface IWalletProvider {
+
+  signer: providers.JsonRpcSigner | undefined | ethers.Signer;
+  get address(): Promise<string> | undefined,
+  _getNetwork(network: Network): Promise<Network>,
+  switchNetwork(network: Network): Promise<boolean>,
+  signMessage(message: Bytes | string): Promise<string>,
+  onSameNetwork(network: Network): Promise<boolean>,
+  connect(network: Network): Promise<boolean>
+}
 
 // export type JSONValue =
 //     | string

@@ -55,7 +55,7 @@ But be careful. Whal3s utilities are working in steps. [Read the documentation c
 
   
 ```javascript
- const utility = await whal3s.createValidationUtility(id)
+ const utility = await whal3s.createValidationUtility(_id)
 ```
 
 #### Connect wallet

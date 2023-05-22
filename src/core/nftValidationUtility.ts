@@ -1,13 +1,14 @@
-import Wallet from './wallet';
 import {
     EngagementRequest,
     EngagementResponse,
     NFTUtility,
     WalletNftValidationResponse
-} from '../types/types-internal';
+} from '../types';
 import {API_URL} from '../utils/env';
 import {AbstractUtility} from '../utils/abstractUtility';
 import ExceptionHandler from './exceptionHandler';
+import WalletProviderInterface from "./providers/WalletProviderInterface";
+import {NETWORKS} from "./networks";
 
 
 class NftValidationUtility extends AbstractUtility {
@@ -21,7 +22,7 @@ class NftValidationUtility extends AbstractUtility {
     public static readonly STEP_CLAIMED: number = 6;
 
 
-    private id: string;
+    private _id: string;
     public details: NFTUtility;
     public nfts: WalletNftValidationResponse = {nfts: [], errors: [], valid: undefined};
 
@@ -31,13 +32,16 @@ class NftValidationUtility extends AbstractUtility {
     private _signature: string
     private _reservation: EngagementResponse | null = null
     private _engagement: EngagementResponse | null = null
-    public wallet: Wallet;
+    public walletProvider: WalletProviderInterface;
 
 
     constructor() {
         super(`${API_URL}`);
     }
 
+    get id(): string {
+        return this._id;
+    }
 
     get step(): number {
         return this._step;
@@ -103,10 +107,10 @@ class NftValidationUtility extends AbstractUtility {
         this.computeStep()
     }
 
-    private computeStep() {
-        if (!this.wallet)
+    private async computeStep() {
+        if (!this.walletProvider)
             return this.step = NftValidationUtility.STEP_UNINITIALIZED
-        if (!this.wallet.address)
+        if (!(await this.walletProvider.getAddress()))
             return this.step = NftValidationUtility.STEP_INITIALIZED
         if (this.nfts === undefined || this.nfts.valid === undefined)
             return this.step = NftValidationUtility.STEP_WALLET_CONNECTED
@@ -120,19 +124,19 @@ class NftValidationUtility extends AbstractUtility {
     }
 
     public static async createValidationUtility(
-        wallet: Wallet,
+        walletProvider: WalletProviderInterface,
         id: string
     ) {
         // assumes user can create multiple validation utilities in one app
         const validationUtilityInstance = new NftValidationUtility();
-        validationUtilityInstance.id = id;
-        validationUtilityInstance.wallet = wallet;
+        validationUtilityInstance._id = id;
+        validationUtilityInstance.walletProvider = walletProvider;
         validationUtilityInstance.details = await validationUtilityInstance.sendGetValidationUtilityRequest();
-        if (validationUtilityInstance.wallet.address)
+        if (await validationUtilityInstance.walletProvider.getAddress())
             validationUtilityInstance.fetchNfts()
-        validationUtilityInstance.wallet.addEventListener('addressChanged', () => {
+        validationUtilityInstance.walletProvider.addEventListener('addressChanged', async () => {
             validationUtilityInstance.resetUserData()
-            if (validationUtilityInstance.wallet.address)
+            if (await validationUtilityInstance.walletProvider.getAddress())
                 validationUtilityInstance.fetchNfts()
 
         }, {signal: validationUtilityInstance.abortController.signal})
@@ -140,8 +144,8 @@ class NftValidationUtility extends AbstractUtility {
         return validationUtilityInstance;
     }
 
-    private checkWalletIsConnected() {
-        if (!this.wallet.address) {
+    private async checkWalletIsConnected() {
+        if (!(await this.walletProvider.getAddress())) {
             this.exceptionHandler.handleError(
                 new Error(
                     'Wallet not connected'
@@ -164,19 +168,19 @@ class NftValidationUtility extends AbstractUtility {
 
     public async connectWallet() {
         try {
-            await this.wallet.connect(this.details.network);
+            await this.walletProvider.connect(NETWORKS[this.details.network])
         } catch (e) {
             // todo: correctly handle this case
             this.exceptionHandler.catchError(e)
         }
 
-        const isOnTheSameNetwork = await this.wallet.onSameNetwork(
-            this.details.network
+        const isOnTheSameNetwork = await this.walletProvider.onSameNetwork(
+            NETWORKS[this.details.network]
         );
 
         if (!isOnTheSameNetwork) {
             try {
-                await this.wallet.switchNetwork(this.details.network);
+                await this.walletProvider.switchNetwork(NETWORKS[this.details.network]);
 
             } catch (e) {
                 // todo: correctly handle this case
@@ -185,23 +189,23 @@ class NftValidationUtility extends AbstractUtility {
         }
 
         this.computeStep()
-        this.dispatchEvent(new CustomEvent('walletConnected', {detail: {address: this.wallet.address}}))
+        this.dispatchEvent(new CustomEvent('walletConnected', {detail: {address: await this.walletProvider.getAddress()}}))
 
     }
 
 
     public async reserveEngagement() {
-        this.checkWalletIsConnected()
+        await this.checkWalletIsConnected()
         this.checkTokenIdIsSet()
         if (!this.message) {
             const messageResponse = await this.sendGetMessageRequest()
             this.message = messageResponse.message
         }
-        this.signature = await this.wallet.signMessage(this.message)
+        this.signature = await this.walletProvider.signMessage(this.message)
         const response = await this.sendReserveEngagementRequest({
             token_id: this.tokenId,
             signature: this.signature,
-            wallet_address: this.wallet.address
+            wallet_address: await this.walletProvider.getAddress()
         })
         this.reservation = response
         this.dispatchEvent(new CustomEvent('engagementReserved', {detail: {engagement: response}}))
@@ -209,21 +213,21 @@ class NftValidationUtility extends AbstractUtility {
     }
 
     public async storeEngagement(metadata: any = null) {
-        this.checkWalletIsConnected()
+        await this.checkWalletIsConnected()
         this.checkTokenIdIsSet()
         if (!this.message) {
             const messageResponse = await this.sendGetMessageRequest()
             this.message = messageResponse.message
         }
         if (!this.signature)
-            this.signature = await this.wallet.signMessage(this.message)
+            this.signature = await this.walletProvider.signMessage(this.message)
 
         if (typeof metadata === 'object')
             metadata = JSON.stringify(metadata)
         const response = await this.sendStoreEngagementRequest({
             token_id: this.tokenId,
             signature: this.signature,
-            wallet_address: this.wallet.address,
+            wallet_address: await this.walletProvider.getAddress(),
             metadata: metadata
         })
         this.engagement = response
@@ -233,8 +237,9 @@ class NftValidationUtility extends AbstractUtility {
 
 
     public async fetchNfts() {
+        console.log('fetchNfts')
         try {
-            this.checkWalletIsConnected()
+            await this.checkWalletIsConnected()
             this.nfts = await this.sendGetAllNftWalletRequest()
         } catch (e) {
             this.nfts = {
@@ -251,12 +256,12 @@ class NftValidationUtility extends AbstractUtility {
     }
 
     public async sign() {
-        this.checkWalletIsConnected()
+        await this.checkWalletIsConnected()
         if (!this.message) {
             const messageResponse = await this.sendGetMessageRequest()
             this.message = messageResponse.message
         }
-        this.signature = await this.wallet.signMessage(this.message)
+        this.signature = await this.walletProvider.signMessage(this.message)
         this.dispatchEvent(new CustomEvent('signed', {detail: {signature: this.signature}}))
         return this.signature
     }
@@ -275,34 +280,34 @@ class NftValidationUtility extends AbstractUtility {
 
     //get all the NFT Validation Utilities
     private sendGetValidationUtilityRequest = () =>
-        this.instance.get<NFTUtility>(`nft-validation-utilities/${this.id}`);
+        this.instance.get<NFTUtility>(`nft-validation-utilities/${this._id}`);
 
     //get all NFTs for wallet
-    private sendGetAllNftWalletRequest = () =>
+    private sendGetAllNftWalletRequest = async () =>
         this.instance.get<WalletNftValidationResponse>(
-            `nft-validation-utilities/${this.id}/wallet/${this.wallet.address}`
+            `nft-validation-utilities/${this._id}/wallet/${await this.walletProvider.getAddress()}`
         );
 
     //get message to sign
-    private sendGetMessageRequest = () => this.instance.post<{ message: string }>(
+    private sendGetMessageRequest = async () => this.instance.post<{ message: string }>(
         `signature-messages`,
         {
-            utility_id: this.id,
-            wallet_address: this.wallet.address
+            utility_id: this._id,
+            wallet_address: await this.walletProvider.getAddress()
         }
     );
 
     //reserve NFT engagement
     private sendReserveEngagementRequest = (params: EngagementRequest) =>
         this.instance.post<EngagementResponse>(
-            `user/nft-validation-utilities/${this.id}/engagement-reservations`,
+            `user/nft-validation-utilities/${this._id}/engagement-reservations`,
             params
         );
 
     //store NFT engagement
     public sendStoreEngagementRequest = (params: EngagementRequest) =>
         this.instance.post<EngagementResponse>(
-            `user/nft-validation-utilities/${this.id}/engagements`,
+            `user/nft-validation-utilities/${this._id}/engagements`,
             params
         );
 
