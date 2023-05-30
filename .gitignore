@@ -10,7 +10,7 @@ whal3s-whal3s.js-0.0.1.tgz
 api.test.ts
 # testing
 /coverage
-/build
+#/build
 
 # misc
 .env
