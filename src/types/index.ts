@@ -5,14 +5,18 @@ export type NetworkArguments = Network | keyof typeof NETWORKS;
 
 
 export type NFTUtility = {
-  id: string;
-  type: string;
-  created_at: string;
-  updated_at: string;
-  contract_address: string;
-  network: keyof typeof NETWORKS;
-  max_engagements: number;
-  max_engagements_per_nft: string;
+    id: string;
+    name: string;
+    description: string;
+    type: string;
+    created_at: string;
+    updated_at: string;
+    contract_address: string;
+    network: keyof typeof NETWORKS;
+    max_engagements: number;
+    max_engagements_per_nft: string;
+    message_to_sign: string;
+    requirements: string;
 };
 
 export type EngagementRequest = {
