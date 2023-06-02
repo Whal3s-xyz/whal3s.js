@@ -1,6 +1,6 @@
 /*!
  * 
- *   @whal3s/whal3s.js v1.0.0-4
+ *   @whal3s/whal3s.js v2.0.0-beta.0
  *   https://github.com/Whal3s-xyz/whal3s.js
  *
  *   Copyright (c) Jonas Esser (https://github.com/Whal3s-xyz) and project contributors.

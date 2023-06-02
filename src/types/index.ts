@@ -1,6 +1,6 @@
 import { NETWORKS } from '../core/networks';
 import {Bytes, ethers, providers} from "ethers";
-
+export {default} from "../core/providers/WalletProviderInterface";
 export type NetworkArguments = Network | keyof typeof NETWORKS;
 
 
@@ -91,26 +91,12 @@ export interface  Network {
   rpcUrl: string;
 }
 
-export interface IWalletProvider {
+export interface WalletProviderInterface extends EventTarget {
+  address: string | undefined;
+  getAddress(): Promise<string | undefined>;
+  switchNetwork(network: Network): Promise<boolean>;
+  signMessage(message: string): Promise<string>;
+  onSameNetwork(network: Network): Promise<boolean>;
+  connect(network: Network): Promise<boolean>;
 
-  signer: providers.JsonRpcSigner | undefined | ethers.Signer;
-  get address(): Promise<string> | undefined,
-  _getNetwork(network: Network): Promise<Network>,
-  switchNetwork(network: Network): Promise<boolean>,
-  signMessage(message: Bytes | string): Promise<string>,
-  onSameNetwork(network: Network): Promise<boolean>,
-  connect(network: Network): Promise<boolean>
 }
-
-// export type JSONValue =
-//     | string
-//     | number
-//     | boolean
-//     | JSONObject
-//     | JSONArray;
-//
-// export interface JSONObject {
-//   [x: string]: JSONValue;
-// }
-//
-// export type JSONArray = Array<JSONValue>

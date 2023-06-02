@@ -1,5 +1,5 @@
 import { NETWORKS } from '../core/networks';
-import { Bytes, ethers, providers } from "ethers";
+export { default } from "../core/providers/WalletProviderInterface";
 export type NetworkArguments = Network | keyof typeof NETWORKS;
 export type NFTUtility = {
     id: string;
@@ -79,13 +79,11 @@ export interface Network {
     label: string;
     rpcUrl: string;
 }
-export interface IWalletProvider {
-    signer: providers.JsonRpcSigner | undefined | ethers.Signer;
-    get address(): Promise<string> | undefined;
-    _getNetwork(network: Network): Promise<Network>;
+export interface WalletProviderInterface extends EventTarget {
+    address: string | undefined;
+    getAddress(): Promise<string | undefined>;
     switchNetwork(network: Network): Promise<boolean>;
-    signMessage(message: Bytes | string): Promise<string>;
+    signMessage(message: string): Promise<string>;
     onSameNetwork(network: Network): Promise<boolean>;
     connect(network: Network): Promise<boolean>;
 }
-export {};
