@@ -1,10 +1,5 @@
-import { NETWORKS } from './core/networks';
-import NftValidationUtility from './core/nftValidationUtility';
-import WalletProviderInterface from "./core/providers/WalletProviderInterface";
-declare class Whal3s {
-    walletProvider: WalletProviderInterface;
-    constructor(walletProvider: WalletProviderInterface);
-    createValidationUtility(id: string): Promise<NftValidationUtility>;
-}
-export { NETWORKS, NftValidationUtility, WalletProviderInterface };
+export * from './core/networks';
+export { default as NftValidationUtility } from './core/nftValidationUtility';
+export * from './types';
+import Whal3s from './Whal3s';
 export default Whal3s;

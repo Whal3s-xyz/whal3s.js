@@ -1,7 +1,6 @@
 import { NETWORKS } from '../core/networks';
-import {Bytes, ethers, providers} from "ethers";
-export {default} from "../core/providers/WalletProviderInterface";
 export type NetworkArguments = Network | keyof typeof NETWORKS;
+
 
 
 export type NFTUtility = {
@@ -91,12 +90,11 @@ export interface  Network {
   rpcUrl: string;
 }
 
-export interface WalletProviderInterface extends EventTarget {
+export interface WalletProviderInterface extends EventTarget{
   address: string | undefined;
   getAddress(): Promise<string | undefined>;
   switchNetwork(network: Network): Promise<boolean>;
   signMessage(message: string): Promise<string>;
   onSameNetwork(network: Network): Promise<boolean>;
   connect(network: Network): Promise<boolean>;
-
 }

@@ -1,6 +1,6 @@
 import { EngagementRequest, EngagementResponse, NFTUtility, WalletNftValidationResponse } from '../types';
 import { AbstractUtility } from '../utils/abstractUtility';
-import WalletProviderInterface from "./providers/WalletProviderInterface";
+import { WalletProviderInterface } from '../types';
 declare class NftValidationUtility extends AbstractUtility {
     static readonly STEP_UNINITIALIZED: number;
     static readonly STEP_INITIALIZED: number;

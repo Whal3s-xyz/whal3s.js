@@ -1,5 +1,4 @@
 import { NETWORKS } from '../core/networks';
-export { default } from "../core/providers/WalletProviderInterface";
 export type NetworkArguments = Network | keyof typeof NETWORKS;
 export type NFTUtility = {
     id: string;
@@ -87,3 +86,4 @@ export interface WalletProviderInterface extends EventTarget {
     onSameNetwork(network: Network): Promise<boolean>;
     connect(network: Network): Promise<boolean>;
 }
+export {};

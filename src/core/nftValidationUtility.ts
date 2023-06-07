@@ -7,7 +7,7 @@ import {
 import {API_URL} from '../utils/env';
 import {AbstractUtility} from '../utils/abstractUtility';
 import ExceptionHandler from './exceptionHandler';
-import WalletProviderInterface from "./providers/WalletProviderInterface";
+import { WalletProviderInterface } from '../types';
 import {NETWORKS} from "./networks";
 
 
