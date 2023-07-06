@@ -78,7 +78,7 @@
     "mini-css-extract-plugin": "^2.7.2",
     "nodemon": "^2.0.20",
     "os-browserify": "^0.3.0",
-    "prettier": "^2.8.2",
+    "prettier": "^3.0.0",
     "process": "^0.11.10",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
