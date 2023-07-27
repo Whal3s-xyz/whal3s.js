@@ -1,5 +1,12 @@
 import { NETWORKS } from '../core/networks';
 export type NetworkArguments = Network | keyof typeof NETWORKS;
+export type NftUtilityRequirement = {
+    conditionType: string;
+    returnValueTest: {
+        value: string;
+    };
+    trait: string;
+};
 export type NFTUtility = {
     id: string;
     name: string;
@@ -12,7 +19,7 @@ export type NFTUtility = {
     max_engagements: number;
     max_engagements_per_nft: string;
     message_to_sign: string;
-    requirements: string;
+    requirements: NftUtilityRequirement[];
 };
 export type EngagementRequest = {
     token_id: string;
