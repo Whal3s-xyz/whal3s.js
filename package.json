@@ -83,7 +83,7 @@
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "style-loader": "^3.3.1",
-    "terser-webpack-plugin": "^5.3.6",
+    "terser-webpack-plugin": "^5.3.10",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "tsx": "^3.12.2",
