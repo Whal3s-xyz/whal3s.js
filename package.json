@@ -43,7 +43,7 @@
     "@web3-onboard/injected-wallets": "^2.8.3",
     "@web3-onboard/transaction-preview": "^2.0.5",
     "@web3-onboard/walletconnect": "^2.3.3",
-    "axios": "^1.2.2",
+    "axios": "^1.6.4",
     "eip-712": "^1.0.0",
     "ethers": "^5.7.2"
   },
